@@ -12,10 +12,6 @@ const EmailConfirm: React.FC = () => {
           rel="icon"
           href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
         />
-        <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Poppins:wght@300&display=swap"
-          rel="stylesheet"
-        />
       </Head>
       <div className="fixed top-0 left-0 right-0 z-10 md:hidden">
         <Navbar />
