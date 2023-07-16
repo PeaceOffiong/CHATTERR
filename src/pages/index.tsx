@@ -9,13 +9,13 @@ import {
 } from "../components";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { useGlobalContext } from "../context/globalContext";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 export default function IndexPage() {
   const { state, dispatch } = useGlobalContext();
   const { isNavbarFixed } = state;
 
-  const fixNavBar = (): void => {
+  const fixNavBar = useCallback(() => {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 20) {
         dispatch({ type: REDUCER_ACTION_TYPE.FIXNAVBAR });
@@ -23,10 +23,13 @@ export default function IndexPage() {
         dispatch({ type: REDUCER_ACTION_TYPE.NAVBARDEF });
       }
     });
-  };
+  }, [dispatch]);
 
   useEffect(() => {
     fixNavBar();
+    return () => {
+      window.removeEventListener("scroll", fixNavBar);
+    };
   }, [isNavbarFixed, fixNavBar]);
 
   return (
