@@ -8,7 +8,6 @@ export const formValidations = (
   confirmPassword?: string
 ): boolean => {
   const email_patterns = /^[^\s@]+@[^\s@]+\.[^\s@]{2,6}$/;
-
   if (password) {
     if (password.length < 6) {
       dispatch({
@@ -40,13 +39,6 @@ export const formValidations = (
       type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_PASSWORD,
       payload: "Password does not match password above"
     });
-    console.log("e no reach");
-  } else if (!email_patterns.test(email)) {
-    dispatch({
-      type: REDUCER_ACTION_TYPE.UPDATE_ERROR_EMAIL,
-      payload: "Email did not match"
-    });
-    return true;
   } else {
     dispatch({
       type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_PASSWORD,
@@ -59,4 +51,5 @@ export const formValidations = (
 
     return false;
   }
+  return false
 };
