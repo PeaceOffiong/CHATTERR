@@ -1,5 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
+import React from 'react';
 
 const Review = () => {
   return (
@@ -20,10 +19,10 @@ const Review = () => {
           style={{ fontFamily: "DM Sans, sans-serif" }}
           className="leading-relaxed text-base max-w-[60%]"
         >
-          "Chatter has become an integral part of my online experience. As a
+          &ldquo;Chatter has become an integral part of my online experience. As a
           user of this incredible blogging platform, I have discovered a vibrant
           community of individuals who are passionate about sharing their ideas
-          and engaging in thoughtful discussions.”
+          and engaging in thoughtful discussions.&rdquo;
         </p>
 
         <div className="flex gap-2 md:flex-row flex-col items-center ">
