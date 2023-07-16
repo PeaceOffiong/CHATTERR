@@ -27,7 +27,7 @@ export default function IndexPage() {
 
   useEffect(() => {
     fixNavBar();
-  }, [isNavbarFixed]);
+  }, [isNavbarFixed, fixNavBar]);
 
   return (
     <main>
