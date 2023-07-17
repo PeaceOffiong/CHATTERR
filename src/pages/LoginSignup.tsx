@@ -105,16 +105,31 @@ const LoginSignup = () => {
     }
   };
 
+  const splitFullName = (fullName) => {
+  const [firstName, lastName] = fullName.split(' ');
+  return { firstName, lastName };
+}
+
   const handleGoogleSignUp = async () => {
 
     signInWithPopup(auth, provider)
       .then((result) => {
         const user = result.user;
-        console.log(user);
-        // const userExist = usersData.find(person => person.firstName )
-        // if (user.displayName) {
-          
-        // }
+        const {firstName, lastName} = splitFullName(user.displayName)
+        let userDetails = {
+          firstName: firstName,
+          lastName: lastName,
+          fullName: user.displayName,
+          interests:[],
+          Blogs: {},
+          password: "",
+          followers: {
+            number:[]
+          },
+          fullName: "",
+          email: user.email
+        }
+        // dispatch({type: REDUCER})
       })
   };
 
