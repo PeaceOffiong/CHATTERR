@@ -1,50 +1,68 @@
-import { useContext, ReactNode, createContext, useState, useReducer } from "react";
+import { useContext, ReactNode, createContext, useReducer, useEffect } from "react";
 import {
   auth,
+  db,
   provider,
   signInWithPopup,
-  signInWithRedirect
 } from "../firebase/firebaseConfig";
 import { dataReducer } from "@/reducers/dataReducer";
+import { AuthErrorCodes, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import { collection, getDocs } from "firebase/firestore";
+import { REDUCER_ACTION_TYPE } from "@/reducers/actions";
 
 type UserAuthProviderProps = {
   children: ReactNode;
 };
 
 type UserAuthContextValue = {
-  state: DataStateType;
+  dataState: DataStateType;
   dispatch: React.Dispatch<any>;
 };
 
-export type DataStateType={
-  userData: (number | string | object)[]
+export type DataStateType = {
+  usersData: (number | string | object)[];
+  currentUser: (number | string | object)[];
 }
 
-export const DataState: DataStateType ={
-  userData:[]  
+export const DataState: DataStateType = {
+  usersData: [],
+  currentUser: [],
 }
 
-const UserAuthContext= createContext<UserAuthContextValue>({
-  state: DataState,
-  dispatch: () => {}
+const UserAuthContext = createContext<UserAuthContextValue>({
+  dataState: DataState,
+  dispatch: () => { },
 });
 
 
-const UserAuthProvider = ({ children }:UserAuthProviderProps) => {
+const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
 
-  const [state, dispatch] = useReducer(dataReducer, DataState);
+  const [dataState, dispatch] = useReducer(dataReducer, DataState);
 
-  const handleGoogleSignIn = () => {
-    signInWithPopup(auth, provider)
-      .then(data => console.log(data))
-      
-};
+  const usersCollectionRef = collection(db, "Users")
 
-  const [test, setTest] = useState();
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const data = await getDocs(usersCollectionRef)
+        const dataArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_USERS, payload: dataArray })
+        console.log(dataArray)
 
-  const contextV: UserAuthContextValue={
-    state,
-    dispatch
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getUsers();
+    console.log(dataState.usersData);
+  }, [])
+
+
+
+  const contextV: UserAuthContextValue = {
+    dataState,
+    dispatch,
+
   }
 
   return (

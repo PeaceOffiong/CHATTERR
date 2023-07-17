@@ -7,9 +7,16 @@ import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { formValidations } from "../customHooks/formValidation";
 import { useState } from "react";
+import {
+  auth,
+  provider,
+  signInWithPopup
+} from "../firebase/firebaseConfig";
+import { UserAuthContext, useUserAuthContext } from "@/context/UserAuthContext";
 
 const LoginSignup = () => {
   const { state, dispatch } = useGlobalContext();
+  const { dataState } = useUserAuthContext();
   const [loginTab, setloginTab] = useState(false);
   const [signUpTab, setSignUpTab] = useState(true);
   const {
@@ -23,6 +30,9 @@ const LoginSignup = () => {
     JoinMethod,
     errors
   } = state;
+
+  const {usersData} =dataState
+
 
   //Form onChange Functions
   const handleFirstName = (e: React.FormEvent<HTMLInputElement>): void =>
@@ -67,7 +77,7 @@ const LoginSignup = () => {
       payload: (e.target as HTMLInputElement).value
     });
 
-  const handleJoinMethod = (e:any): void =>
+  const handleJoinMethod = (e: any): void =>
     dispatch({
       type: REDUCER_ACTION_TYPE.UPDATE_JOIN_METHOD,
       payload: (e.target as HTMLInputElement).value
@@ -93,6 +103,19 @@ const LoginSignup = () => {
         confirmPassword
       };
     }
+  };
+
+  const handleGoogleSignUp = async () => {
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        // const userExist = usersData.find(person => person.firstName )
+        // if (user.displayName) {
+          
+        // }
+      })
   };
 
   return (
@@ -168,14 +191,12 @@ const LoginSignup = () => {
 
               <div className={`h-1.5 w-full rounded-3xl flex bg-gray-200`}>
                 <div
-                  className={`w-1/2 h-full rounded-3xl ${
-                    signUpTab ? "bg-blue-700" : ""
-                  }`}
+                  className={`w-1/2 h-full rounded-3xl ${signUpTab ? "bg-blue-700" : ""
+                    }`}
                 ></div>
                 <div
-                  className={`w-1/2 h-full rounded-3xl ${
-                    loginTab ? "bg-blue-700" : ""
-                  }`}
+                  className={`w-1/2 h-full rounded-3xl ${loginTab ? "bg-blue-700" : ""
+                    }`}
                 ></div>
               </div>
             </div>
@@ -267,7 +288,7 @@ const LoginSignup = () => {
                       />
                     </div>
                     <div className="flex flex-col gap-2">
-                      <div className="border-grey-500 gap-3 flex items-center justify-center border-2 p-4 rounded-md h-12 w-full ">
+                      <div className="border-grey-500 gap-3 flex items-center justify-center border-2 p-4 rounded-md h-12 w-full " onClick={handleGoogleSignUp}>
                         <FcGoogle className="text-2xl" />
                         <p>Sign up with Google</p>
                       </div>
