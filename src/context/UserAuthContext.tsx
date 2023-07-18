@@ -7,8 +7,9 @@ import {
 } from "../firebase/firebaseConfig";
 import { dataReducer } from "@/reducers/dataReducer";
 import { AuthErrorCodes, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
-import { collection, getDocs } from "firebase/firestore";
+import { addDoc, collection, getDocs } from "firebase/firestore";
 import { REDUCER_ACTION_TYPE } from "@/reducers/actions";
+import { NextRouter, useRouter } from "next/router";
 
 type UserAuthProviderProps = {
   children: ReactNode;
@@ -17,10 +18,11 @@ type UserAuthProviderProps = {
 type UserAuthContextValue = {
   dataState: DataStateType;
   dispatch: React.Dispatch<any>;
+  handleGoogleSignUp: () => Promise<void>;
 };
 
 export type DataStateType = {
-  usersData: (number | string | object)[];
+  usersData: any[];
   currentUser: (number | string | object)[];
 }
 
@@ -32,11 +34,12 @@ export const DataState: DataStateType = {
 const UserAuthContext = createContext<UserAuthContextValue>({
   dataState: DataState,
   dispatch: () => { },
+  handleGoogleSignUp: async () => { }
 });
 
 
 const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
-
+  const router: NextRouter = useRouter();
   const [dataState, dispatch] = useReducer(dataReducer, DataState);
 
   const usersCollectionRef = collection(db, "Users")
@@ -57,12 +60,53 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     console.log(dataState.usersData);
   }, [])
 
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, user => {
+  //     if (user) {
+        
+  //     }
+  //   })
+  // }, [dataState.currentUser])
+
+  const splitFullName = (fullName: string): { firstName: string, lastName: string } => {
+    const [firstName, lastName] = fullName.split(' ');
+    return { firstName, lastName };
+  }
+
+  const handleGoogleSignUp = async () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const user = result.user;
+        if (user.displayName !== null) {
+          const { firstName, lastName } = splitFullName(user.displayName);
+          let userDetails = {
+            firstName: firstName,
+            lastName: lastName,
+            fullName: user.displayName,
+            interests: [],
+            Blogs: {},
+            password: "",
+            followers: {
+              number: []
+            },
+            email: user.email
+          };
+          addDoc(usersCollectionRef, userDetails)
+          dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
+          dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
+          router.push(`/${userDetails.firstName}${userDetails.lastName}`);
+        }
+      })
+      .catch((error) => {
+        console.error("An error occurred:", error);
+      });
+  };
 
 
   const contextV: UserAuthContextValue = {
     dataState,
     dispatch,
-
+    handleGoogleSignUp,
   }
 
   return (
@@ -70,10 +114,17 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
       {children}
     </UserAuthContext.Provider>
   );
+
 };
+
+
+
+;
 
 export const useUserAuthContext = () => {
   return useContext(UserAuthContext);
 };
 
 export { UserAuthContext, UserAuthProvider };
+
+

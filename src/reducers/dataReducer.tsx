@@ -6,6 +6,8 @@ export const dataReducer = (state: DataStateType,
     switch (action.type) {
         case REDUCER_ACTION_TYPE.UPDATE_USERS:
             return { ...state, usersData: action.payload }
+        case REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER:
+            return {...state, currentUser: [action.payload]}
         default:
             throw new Error();
     }

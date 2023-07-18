@@ -30,7 +30,7 @@ interface InputFormProps {
             placeholder={placeholder}
             value={value}
             onChange={onChange}
-            className="border-grey-500 p-4 border-2 rounded-md h-12 md:h-10 w-full"
+            className="border-grey-500 p-4 border-2 rounded-md h-10 md:h-10 w-full"
             required
           />
         </div>

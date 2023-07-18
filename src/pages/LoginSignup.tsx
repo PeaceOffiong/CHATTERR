@@ -7,16 +7,11 @@ import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { formValidations } from "../customHooks/formValidation";
 import { useState } from "react";
-import {
-  auth,
-  provider,
-  signInWithPopup
-} from "../firebase/firebaseConfig";
-import { UserAuthContext, useUserAuthContext } from "@/context/UserAuthContext";
+import { useUserAuthContext } from "@/context/UserAuthContext";
 
 const LoginSignup = () => {
   const { state, dispatch } = useGlobalContext();
-  const { dataState } = useUserAuthContext();
+  const { handleGoogleSignUp,dataState } = useUserAuthContext();
   const [loginTab, setloginTab] = useState(false);
   const [signUpTab, setSignUpTab] = useState(true);
   const {
@@ -31,8 +26,7 @@ const LoginSignup = () => {
     errors
   } = state;
 
-  const {usersData} =dataState
-
+  const { usersData } = dataState;
 
   //Form onChange Functions
   const handleFirstName = (e: React.FormEvent<HTMLInputElement>): void =>
@@ -88,9 +82,10 @@ const LoginSignup = () => {
     e.preventDefault();
     const isFormInValid = formValidations(
       dispatch,
+      usersData,
       email,
       password,
-      confirmPassword
+      confirmPassword,
     );
 
     if (isFormInValid === true) {
@@ -105,38 +100,11 @@ const LoginSignup = () => {
     }
   };
 
-  const splitFullName = (fullName) => {
-  const [firstName, lastName] = fullName.split(' ');
-  return { firstName, lastName };
-}
-
-  const handleGoogleSignUp = async () => {
-
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        const user = result.user;
-        const {firstName, lastName} = splitFullName(user.displayName)
-        let userDetails = {
-          firstName: firstName,
-          lastName: lastName,
-          fullName: user.displayName,
-          interests:[],
-          Blogs: {},
-          password: "",
-          followers: {
-            number:[]
-          },
-          fullName: "",
-          email: user.email
-        }
-        // dispatch({type: REDUCER})
-      })
-  };
 
   return (
     <section
       style={{ fontFamily: "DM Sans, sans-serif" }}
-      className="md:h-screen md:overflow-hidden"
+      className="md:h-screen md:overflow-hidden h-full"
     >
       <div className="fixed top-0 left-0 right-0 z-10 md:hidden">
         <Navbar />
@@ -179,12 +147,10 @@ const LoginSignup = () => {
         </div>
 
         <section
-          className="w-full md:w-3/5 h-screen  flex flex-col items-center py-4 overflow-hidden"
+          className="w-full h-full  md:w-3/5 md:h-screen flex flex-col items-center py-4 overflow-hidden"
           id="formSection"
         >
-          <div className="w-full flex items-center flex-col h-full">
-            {/*Switch Forms Navigation  */}
-            <div className="h-10 flex flex-col justify-evenly sm:w-3/4 w-4/5">
+          <div className="h-10 flex flex-col justify-evenly sm:w-3/4 w-4/5">
               <div className="flex flex-row text-sm cursor-pointer">
                 <p
                   className="uppercase w-1/2"
@@ -215,6 +181,9 @@ const LoginSignup = () => {
                 ></div>
               </div>
             </div>
+          <div className="w-full flex items-center flex-col h-screen">
+            {/*Switch Forms Navigation  */}
+            
 
             {/*Form Section*/}
             <div className="relative sm:w-3/4 w-full flex ease-linear gap-10 h-full">
@@ -300,14 +269,15 @@ const LoginSignup = () => {
                         type="submit"
                         value="Create Account"
                         className="cursor-pointer h-12 w-full bg-blue-700 rounded-md capitalize text-white self-start"
+                        
                       />
                     </div>
                     <div className="flex flex-col gap-2">
-                      <div className="border-grey-500 gap-3 flex items-center justify-center border-2 p-4 rounded-md h-12 w-full " onClick={handleGoogleSignUp}>
+                      <div className="border-grey-500 gap-3 flex items-center justify-center border-2 p-4 rounded-md h-12 w-full cursor-pointer " onClick={handleGoogleSignUp}>
                         <FcGoogle className="text-2xl" />
                         <p>Sign up with Google</p>
                       </div>
-                      <div className="border-grey-500 gap-3 flex items-center justify-center border-2 p-4 rounded-md h-12 w-full ">
+                      <div className="border-grey-500 gap-3 flex items-center justify-center border-2 p-4 rounded-md h-12 w-full cursor-pointer ">
                         <FaLinkedin className="text-2xl" />
                         <p>Sign up with Linked In</p>
                       </div>
