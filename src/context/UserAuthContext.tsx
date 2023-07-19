@@ -102,7 +102,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
       });
   };
 
-
   const contextV: UserAuthContextValue = {
     dataState,
     dispatch,
@@ -116,10 +115,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
   );
 
 };
-
-
-
-;
 
 export const useUserAuthContext = () => {
   return useContext(UserAuthContext);
