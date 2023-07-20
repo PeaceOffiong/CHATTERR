@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Navbar, EmailConfirm, Login, SignUp } from "../generalComponents";
+import { Navbar, EmailConfirm, Login, SignUp } from "../components";
 import Link from "next/link";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";

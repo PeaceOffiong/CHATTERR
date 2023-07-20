@@ -1,4 +1,4 @@
-import { InputForm } from ".";
+import { InputForm } from "../components";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 

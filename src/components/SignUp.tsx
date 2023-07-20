@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
-import { InputForm } from ".";
+import { InputForm } from "../components";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
