@@ -1,33 +1,41 @@
 import Head from "next/head";
-import { Navbar, EmailConfirm, Login, SignUp } from "../components";
+import { Navbar, EmailConfirm, Login, SignUp } from "../generalComponents";
 import Link from "next/link";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { formValidations } from "../customHooks/formValidation";
 import { useState } from "react";
-import { useUserAuthContext } from "@/context/UserAuthContext";
+import { useUserAuthContext, CurrentUserProps } from "@/context/UserAuthContext";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from "../firebase/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
+import emailjs from 'emailjs-com';
+import { NextRouter, useRouter } from "next/router";
 
+
+emailjs.init('service_pgfq8lm');
 
 
 const LoginSignup = () => {
   const { state, dispatch } = useGlobalContext();
-  const { handleGoogleSignUp,dataState } = useUserAuthContext();
+  const { dataState } = useUserAuthContext();
+  const { usersData, currentUser } = dataState;
   const [loginTab, setloginTab] = useState<boolean>(false);
   const [signUpTab, setSignUpTab] = useState<boolean>(true);
   const [showEmailConfirm, setShowEmailConfirm] = useState<boolean>(false);
-  const [confirmCode, setConfirmCode] = useState<string[]>(["", "", "", ""])
+  const [confirmCode, setConfirmCode] = useState<string[]>(["", "", "", ""]);
+  const [resendCode, setResendCode] = useState<boolean>(false);
   const {
     firstName,
     lastName,
     email,
     confirmPassword,
     password,
+    errors,
   } = state;
+  const [generatedCode, setGeneratedCode] = useState<string>("");
+ const router: NextRouter = useRouter();
 
-
-  const { usersData } = dataState;
-
-  //Form Validations
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const isFormInValid = formValidations(
@@ -42,6 +50,7 @@ const LoginSignup = () => {
       console.log(isFormInValid);
     } else if (isFormInValid === false) {
       const Person = {
+        email,
         firstName,
         lastName,
         password,
@@ -51,10 +60,82 @@ const LoginSignup = () => {
         followers: {
           number: []
         },
-        email
+
       };
+
+      signInWithEmail(Person)
+      setShowEmailConfirm(true);
     }
   };
+
+  const signInWithEmail = async (person: CurrentUserProps) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, person.email, person.password);
+      const user = userCredential.user;
+      const userRef = doc(db, 'Users', user.uid);
+      await setDoc(userRef, {
+        firstName: person.firstName,
+        lastName: person.lastName,
+        fullName: person.fullName,
+        interests: person.interests,
+        Blogs: person.Blogs,
+        followers: {
+          number: person.followers.number
+        }
+      })
+      await sendVerificationCode(person.email);
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload:person });
+      setShowEmailConfirm(true);
+    } catch (error) {
+      console.error("failed to sign in")
+    }
+  }
+
+  const generateVerificationCode = () => {
+    const min = 1000;
+    const max = 9999;
+    const verificationCode = Math.floor(Math.random() * (max - min + 1) + min).toString();
+
+    setGeneratedCode(verificationCode);
+    return verificationCode.toString(); 
+  };
+
+  const sendVerificationCode = async (email: string) => {
+    try {
+
+      const verificationCode = generateVerificationCode();
+
+      const mailOptions = {
+        from: 'peaceyben@gmail.com',
+        to: email,
+        subject: 'Verification Code for Chatter',
+        text: `Your verification code is: ${verificationCode}`,
+      };
+
+      const response = await emailjs.send('service_pgfq8lm', "template_syfsuid", mailOptions)
+      setTimeout(() => {
+      setResendCode(true)
+      }, 60000)
+      console.log('Verification code sent successfully', response);
+    } catch (error) {
+      console.error('Error sending verification code:', error);   
+    }
+  };
+
+  const verifyCode = async (Arraycode: (any)[]) => {
+    let code = "";
+    for (let i = 0; i < Arraycode.length; i++) {
+      code += Arraycode[i];
+    }
+    if (code === generatedCode) {
+      if (currentUser.length > 0){
+        router.push(`/${currentUser[0].firstName}${currentUser[0].lastName}`);
+        console.log("Email verified")
+      }
+    } else {
+      dispatch({type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL, payload:"Code Incorrect"} )
+    }
+  }
 
 
   return (
@@ -137,13 +218,13 @@ const LoginSignup = () => {
               </div>
           </div>
           <div className="w-full flex items-center flex-col h-screen">          
-            {/*Form Section*/}
             <div className="relative sm:w-3/4 w-full flex ease-linear gap-10 h-full">
               <SignUp signUpTab={signUpTab} handleSubmit={handleSubmit} />
               <Login loginTab={loginTab} />
             </div>
           </div>
-          <EmailConfirm showEmailConfirm={showEmailConfirm} confirmCode={confirmCode} setConfirmCode={setConfirmCode}/>
+          <EmailConfirm showEmailConfirm={showEmailConfirm} confirmCode={confirmCode} setConfirmCode={setConfirmCode} setShowEmailConfirm={setShowEmailConfirm}
+            verifyCode={verifyCode} resendCode={ resendCode} />
         </section>
       </div>
     </section>

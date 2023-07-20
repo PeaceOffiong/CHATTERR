@@ -1,5 +1,5 @@
 import { useGlobalContext } from "@/context/globalContext";
-import { InputForm } from "../components";
+import { InputForm } from ".";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
@@ -26,7 +26,7 @@ const SignUp: React.FC<signUpProps> = ({ signUpTab, handleSubmit }) => {
             type: REDUCER_ACTION_TYPE.UPDATE_EMAIL,
             payload: (e.target as HTMLInputElement).value
         });
-    
+
     const handleFirstName = (e: React.FormEvent<HTMLInputElement>): void =>
         dispatch({
             type: REDUCER_ACTION_TYPE.UPDATE_FIRSTNAME,
@@ -38,13 +38,13 @@ const SignUp: React.FC<signUpProps> = ({ signUpTab, handleSubmit }) => {
             type: REDUCER_ACTION_TYPE.UPDATE_LASTNAME,
             payload: (e.target as HTMLInputElement).value
         });
-    
+
     const handleJoinMethod = (e: any): void =>
         dispatch({
             type: REDUCER_ACTION_TYPE.UPDATE_JOIN_METHOD,
             payload: (e.target as HTMLInputElement).value
         });
-    
+
     const handlePassword = (e: React.FormEvent<HTMLInputElement>): void =>
         dispatch({
             type: REDUCER_ACTION_TYPE.UPDATE_PASSWORD,
@@ -56,7 +56,7 @@ const SignUp: React.FC<signUpProps> = ({ signUpTab, handleSubmit }) => {
             type: REDUCER_ACTION_TYPE.UPDATE_CONFRIM_PASSWORD,
             payload: (e.target as HTMLInputElement).value
         });
-    
+
     return (
         <>
             <div

@@ -55,6 +55,7 @@ export const formValidations = (
       type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_PASSWORD,
       payload: "Password does not match password above"
     });
+    return true;
   } else {
     dispatch({
       type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_PASSWORD,

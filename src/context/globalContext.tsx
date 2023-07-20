@@ -30,6 +30,7 @@ type StateType = {
     ConfirmPassword: string;
     loginEmail: string;
     loginPassword: string;
+    confirmEmail: string;
   };
 };
 
@@ -52,7 +53,8 @@ export const initialState: StateType = {
     LastName: "",
     ConfirmPassword: "",
     loginEmail: "",
-    loginPassword: ""
+    loginPassword: "",
+    confirmEmail: "",
   }
 };
 

@@ -1,4 +1,4 @@
-import { InputForm } from "../components";
+import { InputForm } from ".";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 
@@ -6,11 +6,11 @@ type loginTabProps = {
     loginTab: boolean
 }
 
-const Login:React.FC<loginTabProps> = ({loginTab}) => {
+const Login: React.FC<loginTabProps> = ({ loginTab }) => {
     const { state, dispatch } = useGlobalContext();
     const {
         loginEmail,
-        loginPassword, 
+        loginPassword,
         errors
     } = state;
 

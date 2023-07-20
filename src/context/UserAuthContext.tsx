@@ -6,7 +6,7 @@ import {
   signInWithPopup,
 } from "../firebase/firebaseConfig";
 import { dataReducer } from "@/reducers/dataReducer";
-import { AuthErrorCodes, createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import {  onAuthStateChanged } from 'firebase/auth';
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { REDUCER_ACTION_TYPE } from "@/reducers/actions";
 import { NextRouter, useRouter } from "next/router";
@@ -14,6 +14,19 @@ import { NextRouter, useRouter } from "next/router";
 type UserAuthProviderProps = {
   children: ReactNode;
 };
+
+ export type CurrentUserProps = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  fullName: string,
+  interests: Array<any>,
+  Blogs: object,
+  followers: {
+    number: Array<any>
+  },
+}
 
 type UserAuthContextValue = {
   dataState: DataStateType;
@@ -23,7 +36,7 @@ type UserAuthContextValue = {
 
 export type DataStateType = {
   usersData: any[];
-  currentUser: (number | string | object)[];
+  currentUser: CurrentUserProps[];
 }
 
 export const DataState: DataStateType = {
@@ -92,7 +105,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
             email: user.email
           };
           addDoc(usersCollectionRef, userDetails)
-          dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
           dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
           router.push(`/${userDetails.firstName}${userDetails.lastName}`);
         }

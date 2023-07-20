@@ -6,7 +6,7 @@ import {
   Review,
   Others,
   Footer
-} from "../components";
+} from "../generalComponents";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { useGlobalContext } from "../context/globalContext";
 import { useCallback, useEffect } from "react";
