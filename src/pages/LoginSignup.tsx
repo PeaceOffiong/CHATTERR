@@ -74,6 +74,7 @@ const LoginSignup = () => {
       const user = userCredential.user;
       const userRef = doc(db, 'Users', user.uid);
       await setDoc(userRef, {
+        email:person.email,
         firstName: person.firstName,
         lastName: person.lastName,
         fullName: person.fullName,
@@ -81,7 +82,8 @@ const LoginSignup = () => {
         Blogs: person.Blogs,
         followers: {
           number: person.followers.number
-        }
+        },
+        password: person.password
       })
       await sendVerificationCode(person.email);
       dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload:person });
