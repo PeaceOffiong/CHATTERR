@@ -66,17 +66,19 @@ const reducer = (
           Password: action.payload
         }
       };
-      case REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL:
-        return{
-          ...state,
-          errors:{
-            ...state.errors,
-            confirmEmail: action.payload
-          }
+    case REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL:
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          confirmEmail: action.payload
         }
+      };
+      
     default:
       throw new Error();
   }
 };
 
 export default reducer;
+

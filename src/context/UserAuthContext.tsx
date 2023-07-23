@@ -30,7 +30,7 @@ type UserAuthProviderProps = {
 
 type UserAuthContextValue = {
   dataState: DataStateType;
-  dispatch: React.Dispatch<any>;
+  dispatchB: React.Dispatch<any>;
   handleGoogleSignUp: () => Promise<void>;
 };
 
@@ -46,14 +46,14 @@ export const DataState: DataStateType = {
 
 const UserAuthContext = createContext<UserAuthContextValue>({
   dataState: DataState,
-  dispatch: () => { },
+  dispatchB: () => { },
   handleGoogleSignUp: async () => { }
 });
 
 
 const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
   const router: NextRouter = useRouter();
-  const [dataState, dispatch] = useReducer(dataReducer, DataState);
+  const [dataState, dispatchB] = useReducer(dataReducer, DataState);
 
   const usersCollectionRef = collection(db, "Users")
 
@@ -62,7 +62,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
       try {
         const data = await getDocs(usersCollectionRef)
         const dataArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_USERS, payload: dataArray })
+        dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_USERS, payload: dataArray })
         console.log(dataArray)
 
       } catch (error) {
@@ -105,7 +105,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
             email: user.email
           };
           addDoc(usersCollectionRef, userDetails)
-          dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
+          dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
           router.push(`/${userDetails.firstName}${userDetails.lastName}`);
         }
       })
@@ -116,7 +116,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
 
   const contextV: UserAuthContextValue = {
     dataState,
-    dispatch,
+    dispatchB,
     handleGoogleSignUp,
   }
 

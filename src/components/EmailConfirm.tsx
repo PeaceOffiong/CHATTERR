@@ -57,7 +57,7 @@ const EmailConfirm: React.FC<EmailConfirmProps> = ({
                 <small>{errors.confirmEmail}</small>
                 <h2 className="text-3xl">Enter confirmation code</h2>
                 <p>We emailed you a code. Please input the code here for account verification</p>
-                <div className="flex items-center justify-center  flex-col gap-4">
+                <div className="flex items-center justify-center  flex-row gap-4">
                     {[0, 1, 2, 3].map((index) => (
                         <input
                             className="h-20 w-20 border border-grey-100 rounded-xl flex items-center justify-center text-2xl text-center"

@@ -7,8 +7,8 @@ import { formValidations } from "../customHooks/formValidation";
 import { useState } from "react";
 import { useUserAuthContext, CurrentUserProps } from "@/context/UserAuthContext";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from "../firebase/firebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+import { auth, db, } from "../firebase/firebaseConfig";
+import { doc, addDoc, collection } from "firebase/firestore";
 import emailjs from 'emailjs-com';
 import { NextRouter, useRouter } from "next/router";
 
@@ -18,7 +18,7 @@ emailjs.init('service_pgfq8lm');
 
 const LoginSignup = () => {
   const { state, dispatch } = useGlobalContext();
-  const { dataState } = useUserAuthContext();
+  const { dataState, dispatchB } = useUserAuthContext();
   const { usersData, currentUser } = dataState;
   const [loginTab, setloginTab] = useState<boolean>(false);
   const [signUpTab, setSignUpTab] = useState<boolean>(true);
@@ -34,7 +34,8 @@ const LoginSignup = () => {
     errors,
   } = state;
   const [generatedCode, setGeneratedCode] = useState<string>("");
- const router: NextRouter = useRouter();
+  const router: NextRouter = useRouter();
+  const usersCollectionRef = collection(db, "Users")
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -62,7 +63,6 @@ const LoginSignup = () => {
         },
 
       };
-
       signInWithEmail(Person)
       setShowEmailConfirm(true);
     }
@@ -70,28 +70,39 @@ const LoginSignup = () => {
 
   const signInWithEmail = async (person: CurrentUserProps) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, person.email, person.password);
-      const user = userCredential.user;
-      const userRef = doc(db, 'Users', user.uid);
-      await setDoc(userRef, {
-        email:person.email,
-        firstName: person.firstName,
-        lastName: person.lastName,
-        fullName: person.fullName,
-        interests: person.interests,
-        Blogs: person.Blogs,
-        followers: {
-          number: person.followers.number
-        },
-        password: person.password
-      })
+      console.log("hey there")
+      await addDoc(usersCollectionRef, person)
       await sendVerificationCode(person.email);
-      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload:person });
-      setShowEmailConfirm(true);
+      dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: person });
     } catch (error) {
       console.error("failed to sign in")
     }
   }
+
+   const sendVerificationCode = async (email: string) => {
+    console.log("Peace Ben its here")
+    try {
+      const verificationCode = generateVerificationCode();
+
+      //@ts-ignore
+      await window.Email.send({
+        SecureToken: "467affc4-e93c-4c2f-bb68-bef94a97e75c",
+        To: email,
+        From: "peaceyben@gmail.com",
+        Subject: 'Verification Code for Chatter',
+        Body: `Your verification code is: ${verificationCode}`
+      }).then(
+        // @ts-ignore
+        message => alert(message)
+      );
+
+      setTimeout(() => {
+      setResendCode(true)
+      }, 60000)
+    } catch (error) {
+      console.error('Error sending verification code:', error);   
+    }
+  };
 
   const generateVerificationCode = () => {
     const min = 1000;
@@ -100,28 +111,6 @@ const LoginSignup = () => {
 
     setGeneratedCode(verificationCode);
     return verificationCode.toString(); 
-  };
-
-  const sendVerificationCode = async (email: string) => {
-    try {
-
-      const verificationCode = generateVerificationCode();
-
-      const mailOptions = {
-        from: 'peaceyben@gmail.com',
-        to: email,
-        subject: 'Verification Code for Chatter',
-        text: `Your verification code is: ${verificationCode}`,
-      };
-
-      const response = await emailjs.send('service_pgfq8lm', "template_syfsuid", mailOptions)
-      setTimeout(() => {
-      setResendCode(true)
-      }, 60000)
-      console.log('Verification code sent successfully', response);
-    } catch (error) {
-      console.error('Error sending verification code:', error);   
-    }
   };
 
   const verifyCode = async (Arraycode: (any)[]) => {
@@ -135,6 +124,7 @@ const LoginSignup = () => {
         console.log("Email verified")
       }
     } else {
+      console.log("code Incorrect");
       dispatch({type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL, payload:"Code Incorrect"} )
     }
   }
