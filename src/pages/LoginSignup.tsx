@@ -6,14 +6,10 @@ import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { formValidations } from "../customHooks/formValidation";
 import { useState } from "react";
 import { useUserAuthContext, CurrentUserProps } from "@/context/UserAuthContext";
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth, db, } from "../firebase/firebaseConfig";
-import { doc, addDoc, collection } from "firebase/firestore";
-import emailjs from 'emailjs-com';
+import { db, } from "../firebase/firebaseConfig";
+import { addDoc, collection } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
 
-
-emailjs.init('service_pgfq8lm');
 
 
 const LoginSignup = () => {
@@ -68,40 +64,28 @@ const LoginSignup = () => {
     }
   };
 
-  const signInWithEmail = async (person: CurrentUserProps) => {
-    try {
-      console.log("hey there")
-      await addDoc(usersCollectionRef, person)
-      await sendVerificationCode(person.email);
+  const signInWithEmail =  (person: CurrentUserProps) => {
+      addDoc(usersCollectionRef, person)
+      sendVerificationCode(person.email);
       dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: person });
-    } catch (error) {
-      console.error("failed to sign in")
-    }
+   
   }
 
-   const sendVerificationCode = async (email: string) => {
-    console.log("Peace Ben its here")
-    try {
+  const sendVerificationCode = (email: string) => {
       const verificationCode = generateVerificationCode();
 
       //@ts-ignore
-      await window.Email.send({
+      window.Email.send({
         SecureToken: "467affc4-e93c-4c2f-bb68-bef94a97e75c",
         To: email,
         From: "peaceyben@gmail.com",
         Subject: 'Verification Code for Chatter',
         Body: `Your verification code is: ${verificationCode}`
-      }).then(
-        // @ts-ignore
-        message => alert(message)
-      );
+      })
 
       setTimeout(() => {
       setResendCode(true)
       }, 60000)
-    } catch (error) {
-      console.error('Error sending verification code:', error);   
-    }
   };
 
   const generateVerificationCode = () => {
@@ -113,7 +97,7 @@ const LoginSignup = () => {
     return verificationCode.toString(); 
   };
 
-  const verifyCode = async (Arraycode: (any)[]) => {
+  const verifyCode = (Arraycode: (any)[]) => {
     let code = "";
     for (let i = 0; i < Arraycode.length; i++) {
       code += Arraycode[i];
@@ -126,6 +110,15 @@ const LoginSignup = () => {
     } else {
       console.log("code Incorrect");
       dispatch({type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL, payload:"Code Incorrect"} )
+    }
+  }
+
+  const handleResendcode = () => {
+    setResendCode(false)
+    if (currentUser.length > 0) {
+      // @ts-ignore
+      console.log(currentUser[0].email)
+      // sendVerificationCode(currentUser.email)
     }
   }
 
@@ -216,7 +209,7 @@ const LoginSignup = () => {
             </div>
           </div>
           <EmailConfirm showEmailConfirm={showEmailConfirm} confirmCode={confirmCode} setConfirmCode={setConfirmCode} setShowEmailConfirm={setShowEmailConfirm}
-            verifyCode={verifyCode} resendCode={ resendCode} />
+            verifyCode={verifyCode} resendCode={resendCode} handleResendcode={handleResendcode} />
         </section>
       </div>
     </section>

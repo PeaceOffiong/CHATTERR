@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState} from "react";
 import { AiOutlineLeftCircle } from "react-icons/ai";
 import { useGlobalContext } from "@/context/globalContext";
 
@@ -8,7 +8,8 @@ type EmailConfirmProps = {
     setConfirmCode: React.Dispatch<React.SetStateAction<string[]>>;
     setShowEmailConfirm: React.Dispatch<React.SetStateAction<boolean>>;
     verifyCode: (Arraycode: any[]) => void;
-    resendCode: boolean
+    resendCode: boolean;
+    handleResendcode: () => void;
 };
 
 const EmailConfirm: React.FC<EmailConfirmProps> = ({
@@ -17,19 +18,19 @@ const EmailConfirm: React.FC<EmailConfirmProps> = ({
     setConfirmCode,
     setShowEmailConfirm,
     verifyCode,
-    resendCode
+    resendCode,
+    handleResendcode
 }) => {
     const inputRefs = useRef<HTMLInputElement[]>([]);
     const { state } = useGlobalContext();
     const { errors } = state;
+    const [resendCodeMsg, setResendcodeMsg] = useState<string>("");
 
-    const displayResendCode = (): Promise<string> => {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve("Resend Code");
-            }, 60000);
-        });
-    };
+    useEffect(() => {
+        setTimeout(() => {
+            setResendcodeMsg("Resend Code")
+        }, 5000)
+    }, [])
 
     const handleInputChange = (
         index: number,
@@ -54,7 +55,7 @@ const EmailConfirm: React.FC<EmailConfirmProps> = ({
                 <div className="absolute left-0 top-0 flex items-center justify-center py-4 text-2xl gap-2 cursor-pointer " onClick={() => setShowEmailConfirm(false)}>
                     <AiOutlineLeftCircle /> <small>Back</small>
                 </div>
-                <small>{errors.confirmEmail}</small>
+                <small className="text-red-700">{errors.confirmEmail}</small>
                 <h2 className="text-3xl">Enter confirmation code</h2>
                 <p>We emailed you a code. Please input the code here for account verification</p>
                 <div className="flex items-center justify-center  flex-row gap-4">
@@ -78,8 +79,8 @@ const EmailConfirm: React.FC<EmailConfirmProps> = ({
                         onClick={() => verifyCode(confirmCode)}
                     />
                 </div>
-                <p>{resendCode ? "Click Below" : " Can't find Your code? you will be able to resend code in a minute"}</p>
-                <p>{ resendCode ? displayResendCode() : ""}</p>
+                <p>{resendCode ? "Click Below" : " Can't find Your code after checking your spam? you will be able to resend code in a minute"}</p>
+                {resendCode && <p onClick={handleResendcode} className="cursor-pointer text-blue-700 text-sm underline">{ resendCodeMsg}</p>}
             </div>
         </>
     );
