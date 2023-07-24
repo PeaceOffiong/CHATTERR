@@ -1,13 +1,12 @@
 import { Dispatch } from "react";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 
-
 export const formValidations = (
   dispatch: Dispatch<any>,
   usersData: any[],
   email?: string,
   password?: string,
-  confirmPassword?: string
+  confirmPassword?: string,
 ): boolean => {
 
   const doesEmailExist = usersData.find(dbEmail => dbEmail.email === email);
@@ -22,7 +21,7 @@ export const formValidations = (
   } else {
     dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_ERROR_EMAIL, payload: "" });
   }
-
+ 
   if (password) {
     if (password.length < 6) {
       dispatch({
@@ -68,6 +67,7 @@ export const formValidations = (
 
     return false;
   }
+  
 
   return false;
 };

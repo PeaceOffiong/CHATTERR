@@ -3,10 +3,11 @@ import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 
 type loginTabProps = {
-    loginTab: boolean
+    loginTab: boolean,
+    handleSignIn: (e: React.FormEvent<HTMLFormElement>) => void
 }
 
-const Login: React.FC<loginTabProps> = ({ loginTab }) => {
+const Login: React.FC<loginTabProps> = ({ loginTab, handleSignIn }) => {
     const { state, dispatch } = useGlobalContext();
     const {
         loginEmail,
@@ -31,7 +32,7 @@ const Login: React.FC<loginTabProps> = ({ loginTab }) => {
                 className={`absolute left-400 w-full flex `}
                 style={loginTab ? { left: 0 } : { left: 750 }}
             >
-                <form className=" w-full m-4 md:m-0">
+                <form className=" w-full m-4 md:m-0"onSubmit={handleSignIn}>
                     <h2 className="text-3xl text-center py-10">
                         <b>Welcome back</b>
                     </h2>
@@ -43,7 +44,7 @@ const Login: React.FC<loginTabProps> = ({ loginTab }) => {
                             placeholder="Janedoe@gmail.com"
                             onChange={handleLoginEmail}
                             value={loginEmail}
-                            errorMessage={errors.Email}
+                            errorMessage={errors.loginEmail}
                         />
                         <InputForm
                             type="password"
@@ -52,7 +53,7 @@ const Login: React.FC<loginTabProps> = ({ loginTab }) => {
                             placeholder="..........."
                             onChange={handleLoginPassword}
                             value={loginPassword}
-                            errorMessage={errors.Password}
+                            errorMessage={errors.loginPassword}
                         />
                         <div className="flex flex-col gap-2">
                             <input

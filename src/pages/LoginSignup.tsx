@@ -9,6 +9,7 @@ import { useUserAuthContext, CurrentUserProps } from "@/context/UserAuthContext"
 import { db, } from "../firebase/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
+import { accessValidations } from "@/customHooks/accessValidation";
 
 
 
@@ -27,7 +28,8 @@ const LoginSignup = () => {
     email,
     confirmPassword,
     password,
-    errors,
+    loginEmail,
+    loginPassword
   } = state;
   const [generatedCode, setGeneratedCode] = useState<string>("");
   const router: NextRouter = useRouter();
@@ -59,16 +61,15 @@ const LoginSignup = () => {
         },
 
       };
-      signInWithEmail(Person)
+      signUpWithEmail(Person)
       setShowEmailConfirm(true);
     }
   };
 
-  const signInWithEmail =  (person: CurrentUserProps) => {
+  const signUpWithEmail =  (person: CurrentUserProps) => {
       addDoc(usersCollectionRef, person)
       sendVerificationCode(person.email);
       dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: person });
-   
   }
 
   const sendVerificationCode = (email: string) => {
@@ -108,7 +109,6 @@ const LoginSignup = () => {
         console.log("Email verified")
       }
     } else {
-      console.log("code Incorrect");
       dispatch({type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL, payload:"Code Incorrect"} )
     }
   }
@@ -116,10 +116,27 @@ const LoginSignup = () => {
   const handleResendcode = () => {
     setResendCode(false)
     if (currentUser.length > 0) {
-      // @ts-ignore
-      console.log(currentUser[0].email)
-      // sendVerificationCode(currentUser.email)
+      sendVerificationCode(currentUser[0].email)
     }
+  }
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>)=> {
+
+    e.preventDefault();
+    try {
+      const grantAccess = await accessValidations(dispatch, dispatchB, loginEmail, loginPassword, usersData)
+      console.log(grantAccess);
+      if (grantAccess) {
+        console.log(currentUser);
+        router.push(`/${currentUser[0].firstName}${currentUser[0].lastName}`);
+        console.log("User Detail verified")
+      } else {
+        console.log("incorrect details")
+      }
+    }catch(error){
+      console.error("Error occurred during access validation:", error);
+    }
+    
   }
 
 
@@ -205,7 +222,7 @@ const LoginSignup = () => {
           <div className="w-full flex items-center flex-col h-screen">          
             <div className="relative sm:w-3/4 w-full flex ease-linear gap-10 h-full">
               <SignUp signUpTab={signUpTab} handleSubmit={handleSubmit} />
-              <Login loginTab={loginTab} />
+              <Login loginTab={loginTab} handleSignIn={handleSignIn} />
             </div>
           </div>
           <EmailConfirm showEmailConfirm={showEmailConfirm} confirmCode={confirmCode} setConfirmCode={setConfirmCode} setShowEmailConfirm={setShowEmailConfirm}

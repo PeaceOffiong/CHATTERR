@@ -26,6 +26,10 @@ const reducer = (
       return { ...state, password: action.payload };
     case REDUCER_ACTION_TYPE.UPDATE_JOIN_METHOD:
       return { ...state, JoinMethod: action.payload };
+    case REDUCER_ACTION_TYPE.UPDATE_LOGIN_EMAIL:
+      return { ...state, loginEmail: action.payload };
+    case REDUCER_ACTION_TYPE.UPDATE_LOGIN_PASSWORD:
+      return { ...state, loginPassword: action.payload }
     case REDUCER_ACTION_TYPE.UPDATE_ERROR_FIRSTNAME:
       return {
         ...state,
@@ -74,7 +78,23 @@ const reducer = (
           confirmEmail: action.payload
         }
       };
-      
+    case REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_EMAIL:
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          loginEmail: action.payload
+        }
+      }
+    case REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_PASSWORD:
+      return {
+        ...state,
+        errors: {
+          ...state.errors,
+          loginPassword: action.payload
+        }
+      }
+
     default:
       throw new Error();
   }
