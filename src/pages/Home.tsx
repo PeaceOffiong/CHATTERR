@@ -3,30 +3,37 @@ import { useUserAuthContext } from '@/context/userAuthContext';
 import Head from "next/head";
 import { useEffect } from "react";
 import { db } from '@/firebase/firebaseConfig';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
-import fetchUser from '@/customHooks/usefetchUser';
 
-type token = {
-
-}
 
 const Home = () => {
   const { dataState, dispatchB } = useUserAuthContext();
-  const { currentUser, usersData } = dataState;
+  const { currentUser } = dataState;
 
   useEffect(() => {
     const token = localStorage.getItem("token");  
-    if (token) {
-      (async () => {
-        try {
-          const specificUser = await fetchUser(token);
-          dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: specificUser });
-        } catch (error) {
-          console.error('Error fetching user:', error);
+    const fetchUser = async (token: string) => {
+      try {
+        const q = query(collection(db, 'Users'), where('email', '==', token));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const userDoc = querySnapshot.docs[0];
+          const user = userDoc.data();
+          dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: user })
+        } else {
+          return null;
         }
-      })();
+      } catch (error) {
+        console.error('Error getting user from Firestore:', error);
+        return null;
+      }
     }
-  }, [currentUser])
+    if (token) {
+      fetchUser(token)
+    }
+  }, [])
 
   if (currentUser.length < 0) {
     return <h1>Loading</h1>
