@@ -3,13 +3,13 @@ import { Navbar, EmailConfirm, Login, SignUp } from "../components";
 import Link from "next/link";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
-import { useFormValidations } from "../customHooks/useformValidation";
+import { formValidations } from "../customHooks/useformValidation";
 import { useState } from "react";
 import { useUserAuthContext, CurrentUserProps } from "@/context/userAuthContext";
 import { db, } from "../firebase/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
-import { useAccessValidations } from "@/customHooks/useaccessValidation";
+import { accessValidations } from "@/customHooks/useaccessValidation";
 
 
 
@@ -37,7 +37,7 @@ const LoginSignup = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const isFormInValid = useFormValidations(
+    const isFormInValid = formValidations(
       dispatch,
       usersData,
       email,
@@ -135,7 +135,7 @@ const LoginSignup = () => {
 
     e.preventDefault();
     try {
-      const grantAccess = await useAccessValidations(dispatch, dispatchB, loginEmail, loginPassword, usersData)
+      const grantAccess = await accessValidations(dispatch, dispatchB, loginEmail, loginPassword, usersData)
       console.log(grantAccess);
       if (grantAccess) {
         console.log(currentUser);

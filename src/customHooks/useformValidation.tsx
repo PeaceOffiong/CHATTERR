@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 
-export const useFormValidations = (
+export const formValidations = (
   dispatch: Dispatch<any>,
   usersData: any[],
   email?: string,
