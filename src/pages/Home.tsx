@@ -4,7 +4,7 @@ import Head from "next/head";
 import { useEffect } from "react";
 import { db } from '@/firebase/firebaseConfig';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
-import useFetchUser from '@/customHooks/usefetchUser';
+import fetchUser from '@/customHooks/usefetchUser';
 
 type token = {
 
@@ -19,14 +19,14 @@ const Home = () => {
     if (token) {
       (async () => {
         try {
-          const specificUser = await useFetchUser(token);
+          const specificUser = await fetchUser(token);
           dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: specificUser });
         } catch (error) {
           console.error('Error fetching user:', error);
         }
       })();
     }
-  }, [])
+  }, [currentUser])
 
   if (currentUser.length < 0) {
     return <h1>Loading</h1>

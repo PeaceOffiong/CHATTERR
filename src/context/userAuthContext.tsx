@@ -72,7 +72,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     }
     getUsers();
     console.log(dataState.usersData);
-  }, [])
+  }, [dataState.usersData, usersCollectionRef])
 
 
   const splitFullName = (fullName: string): { firstName: string, lastName: string } => {

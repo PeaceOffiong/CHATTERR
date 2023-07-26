@@ -2,7 +2,7 @@ import { Body, Navsection, SearchBar } from '@/componentsUserAcc';
 import { useRouter } from 'next/router';
 import Head from "next/head";
 
-const UserPage = () => {
+const UserProfile = () => {
     const router = useRouter();
     const { username } = router.query;
     console.log(username);
@@ -17,9 +17,9 @@ const UserPage = () => {
                     href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
                 />
             </Head>
-            <p>{username }'s profile</p>
+            <p>{username}&apos;s profile</p>
         </div>
     );
 };
 
-export default UserPage;
+export default UserProfile;
