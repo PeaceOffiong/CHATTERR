@@ -27,7 +27,7 @@ const useFetchUser = (email:string) => {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, [getData]);
     return { loading, specificUser };
 }
 

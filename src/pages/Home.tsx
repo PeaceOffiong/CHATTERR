@@ -3,20 +3,28 @@ import { useUserAuthContext } from '@/context/userAuthContext';
 import Head from "next/head";
 import { useEffect } from "react";
 import { db } from '@/firebase/firebaseConfig';
-import { collection, query, where, getDocs } from 'firebase/firestore';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
 import useFetchUser from '@/customHooks/usefetchUser';
 
+type token = {
+
+}
 
 const Home = () => {
   const { dataState, dispatchB } = useUserAuthContext();
   const { currentUser, usersData } = dataState;
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");  
     if (token) {
-      const { loading, specificUser } = useFetchUser(token);
-      dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: specificUser });
+      (async () => {
+        try {
+          const specificUser = await useFetchUser(token);
+          dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: specificUser });
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      })();
     }
   }, [])
 
