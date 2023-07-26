@@ -3,13 +3,13 @@ import { Navbar, EmailConfirm, Login, SignUp } from "../components";
 import Link from "next/link";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
-import { formValidations } from "../customHooks/formValidation";
+import { useFormValidations } from "../customHooks/useformValidation";
 import { useState } from "react";
-import { useUserAuthContext, CurrentUserProps } from "@/context/UserAuthContext";
+import { useUserAuthContext, CurrentUserProps } from "@/context/userAuthContext";
 import { db, } from "../firebase/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
-import { accessValidations } from "@/customHooks/accessValidation";
+import { useAccessValidations } from "@/customHooks/useaccessValidation";
 
 
 
@@ -37,7 +37,7 @@ const LoginSignup = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const isFormInValid = formValidations(
+    const isFormInValid = useFormValidations(
       dispatch,
       usersData,
       email,
@@ -63,30 +63,39 @@ const LoginSignup = () => {
       };
       signUpWithEmail(Person)
       setShowEmailConfirm(true);
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_EMAIL, payload: "" })
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_CONFRIM_PASSWORD, payload: "" })
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_PASSWORD, payload: "" })
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_FIRSTNAME, payload: "" })
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_LASTNAME, payload: "" })
     }
   };
 
-  const signUpWithEmail =  (person: CurrentUserProps) => {
-      addDoc(usersCollectionRef, person)
-      sendVerificationCode(person.email);
-      dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: person });
+  const signUpWithEmail = (person: CurrentUserProps) => {
+    addDoc(usersCollectionRef, person)
+    sendVerificationCode(person.email);
+    localStorage.setitem("CurrentUser", person.email)
+    dispatchB({
+      type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
+      payload: person
+    })
   }
 
   const sendVerificationCode = (email: string) => {
-      const verificationCode = generateVerificationCode();
+    const verificationCode = generateVerificationCode();
 
-      //@ts-ignore
-      window.Email.send({
-        SecureToken: "467affc4-e93c-4c2f-bb68-bef94a97e75c",
-        To: email,
-        From: "peaceyben@gmail.com",
-        Subject: 'Verification Code for Chatter',
-        Body: `Your verification code is: ${verificationCode}`
-      })
+    //@ts-ignore
+    window.Email.send({
+      SecureToken: "467affc4-e93c-4c2f-bb68-bef94a97e75c",
+      To: email,
+      From: "peaceyben@gmail.com",
+      Subject: 'Verification Code for Chatter',
+      Body: `Your verification code is: ${verificationCode}`
+    })
 
-      setTimeout(() => {
+    setTimeout(() => {
       setResendCode(true)
-      }, 60000)
+    }, 60000)
   };
 
   const generateVerificationCode = () => {
@@ -95,7 +104,7 @@ const LoginSignup = () => {
     const verificationCode = Math.floor(Math.random() * (max - min + 1) + min).toString();
 
     setGeneratedCode(verificationCode);
-    return verificationCode.toString(); 
+    return verificationCode.toString();
   };
 
   const verifyCode = (Arraycode: (any)[]) => {
@@ -104,12 +113,14 @@ const LoginSignup = () => {
       code += Arraycode[i];
     }
     if (code === generatedCode) {
-      if (currentUser.length > 0){
-        router.push(`/${currentUser[0].firstName}${currentUser[0].lastName}`);
+      if (currentUser.length > 0) {
+        router.push("/Home")
+        // router.push(`/${currentUser[0].firstName}${currentUser[0].lastName}`);
         console.log("Email verified")
       }
+
     } else {
-      dispatch({type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL, payload:"Code Incorrect"} )
+      dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_ERROR_CONFIRM_EMAIL, payload: "Code Incorrect" })
     }
   }
 
@@ -120,23 +131,26 @@ const LoginSignup = () => {
     }
   }
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>)=> {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
 
     e.preventDefault();
     try {
-      const grantAccess = await accessValidations(dispatch, dispatchB, loginEmail, loginPassword, usersData)
+      const grantAccess = await useAccessValidations(dispatch, dispatchB, loginEmail, loginPassword, usersData)
       console.log(grantAccess);
       if (grantAccess) {
         console.log(currentUser);
-        router.push(`/${currentUser[0].firstName}${currentUser[0].lastName}`);
-        console.log("User Detail verified")
+        router.push("/Home");
+        localStorage.setItem("token", loginEmail);
+
+        dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_LOGIN_EMAIL, payload: "" })
+        dispatch({ type: REDUCER_ACTION_TYPE.UPDATE_LOGIN_PASSWORD, payload: "" })
       } else {
         console.log("incorrect details")
       }
-    }catch(error){
+    } catch (error) {
       console.error("Error occurred during access validation:", error);
     }
-    
+
   }
 
 
@@ -189,37 +203,37 @@ const LoginSignup = () => {
           id="formSection"
         >
           <div className="h-10 flex flex-col justify-evenly sm:w-3/4 w-4/5 relative">
-              <div className="flex flex-row text-sm cursor-pointer">
-                <p
-                  className="uppercase w-1/2"
-                  onClick={() => {
-                    setloginTab(false), setSignUpTab(true);
-                  }}
-                >
-                  <b>Register</b>
-                </p>
-                <p
-                  className="uppercase w-1/2 text-right"
-                  onClick={() => {
-                    setloginTab(true), setSignUpTab(false);
-                  }}
-                >
-                  <b className="">Login</b>
-                </p>
-              </div>
+            <div className="flex flex-row text-sm cursor-pointer">
+              <p
+                className="uppercase w-1/2"
+                onClick={() => {
+                  setloginTab(false), setSignUpTab(true);
+                }}
+              >
+                <b>Register</b>
+              </p>
+              <p
+                className="uppercase w-1/2 text-right"
+                onClick={() => {
+                  setloginTab(true), setSignUpTab(false);
+                }}
+              >
+                <b className="">Login</b>
+              </p>
+            </div>
 
-              <div className={`h-1.5 w-full rounded-3xl flex bg-gray-200`}>
-                <div
-                  className={`w-1/2 h-full rounded-3xl ${signUpTab ? "bg-blue-700" : ""
-                    }`}
-                ></div>
-                <div
-                  className={`w-1/2 h-full rounded-3xl ${loginTab ? "bg-blue-700" : ""
-                    }`}
-                ></div>
-              </div>
+            <div className={`h-1.5 w-full rounded-3xl flex bg-gray-200`}>
+              <div
+                className={`w-1/2 h-full rounded-3xl ${signUpTab ? "bg-blue-700" : ""
+                  }`}
+              ></div>
+              <div
+                className={`w-1/2 h-full rounded-3xl ${loginTab ? "bg-blue-700" : ""
+                  }`}
+              ></div>
+            </div>
           </div>
-          <div className="w-full flex items-center flex-col h-screen">          
+          <div className="w-full flex items-center flex-col h-screen">
             <div className="relative sm:w-3/4 w-full flex ease-linear gap-10 h-full">
               <SignUp signUpTab={signUpTab} handleSubmit={handleSubmit} />
               <Login loginTab={loginTab} handleSignIn={handleSignIn} />

@@ -21,11 +21,12 @@ type UserAuthProviderProps = {
   firstName: string;
   lastName: string;
   fullName: string,
-  interests: Array<any>,
-  Blogs: object,
+   interests: Array<any>;
+   Blogs: object;
   followers: {
     number: Array<any>
-  },
+  };
+   id?: string;
 }
 
 type UserAuthContextValue = {
@@ -73,13 +74,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     console.log(dataState.usersData);
   }, [])
 
-  // useEffect(() => {
-  //   onAuthStateChanged(auth, user => {
-  //     if (user) {
-        
-  //     }
-  //   })
-  // }, [dataState.currentUser])
 
   const splitFullName = (fullName: string): { firstName: string, lastName: string } => {
     const [firstName, lastName] = fullName.split(' ');
@@ -105,8 +99,12 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
             email: user.email
           };
           addDoc(usersCollectionRef, userDetails)
-          dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: userDetails });
-          router.push(`/${userDetails.firstName}${userDetails.lastName}`);
+          localStorage.setitem("token", userDetails.email)
+          dispatchB({
+            type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
+            payload: userDetails
+          })
+          router.push(`/Home`);
         }
       })
       .catch((error) => {

@@ -49,7 +49,7 @@ const EmailConfirm: React.FC<EmailConfirmProps> = ({
     return (
         <>
             <div
-                className={`z-10 sm:w-3/4 w-full flex ease-linear gap-4 h-full bg-white absolute top-0 bottom-0 flex items-center justify-center text-center flex-col ${showEmailConfirm ? "" : "hidden"
+                className={`z-10 sm:w-3/4 w-full flex ease-linear gap-4 h-full bg-white absolute top-0 bottom-0 flex items-center justify-center text-center flex-col px-2.5 sm:p-0 ${showEmailConfirm ? "" : "hidden"
                     }`}
             >
                 <div className="absolute left-0 top-0 flex items-center justify-center py-4 text-2xl gap-2 cursor-pointer " onClick={() => setShowEmailConfirm(false)}>

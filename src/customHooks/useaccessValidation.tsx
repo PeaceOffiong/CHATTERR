@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 
-export const accessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<any>, loginEmail: string, loginPassword: string, usersData: any[]) => {
+export const useAccessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<any>, loginEmail: string, loginPassword: string, usersData: any[]) => {
     return new Promise((resolve) => {
         const isUserOnDB = usersData.find(person => person.email === loginEmail);
         console.log(isUserOnDB)

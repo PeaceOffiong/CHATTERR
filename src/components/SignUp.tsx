@@ -3,7 +3,7 @@ import { InputForm } from "../components";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin } from "react-icons/fa";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
-import { useUserAuthContext } from "@/context/UserAuthContext";
+import { useUserAuthContext } from "@/context/userAuthContext";
 
 type signUpProps = {
     signUpTab: boolean;

@@ -1,5 +1,5 @@
 import { REDUCER_ACTION_TYPE, ReducerAction } from "./actions";
-import { DataStateType } from "../context/UserAuthContext";
+import { DataStateType } from "../context/userAuthContext";
 
 export const dataReducer = (state: DataStateType,
     action: ReducerAction): DataStateType => {
