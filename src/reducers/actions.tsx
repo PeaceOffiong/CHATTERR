@@ -21,7 +21,7 @@ export enum REDUCER_ACTION_TYPE {
   UPDATE_ERROR_LOGIN_PASSWORD,
   UPDATE_USERS,
   UPDATE_CURRENT_USER,
-
+  UPDATE_TABS
 }
 
 export type ReducerAction = {

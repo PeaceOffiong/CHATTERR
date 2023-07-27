@@ -32,6 +32,7 @@ const Home = () => {
     }
     if (token) {
       fetchUser(token)
+      console.log(currentUser);
     }
   }, [])
 
@@ -50,9 +51,9 @@ const Home = () => {
             href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
           />
         </Head>
-        <section className='flex justify-between'>
+        <section className='flex h-full relative'>
           <Navsection />
-          <SearchBar />
+          <Body />
         </section>
       </div>
     </div>

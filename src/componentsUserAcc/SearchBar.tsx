@@ -1,6 +1,5 @@
 import { BsBell } from "react-icons/bs";
 import { FiSearch } from "react-icons/fi";
-import Body from "./Body";
 import Image from "next/image";
 
 const SearchBar = () => {

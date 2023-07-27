@@ -6,7 +6,6 @@ import {
   signInWithPopup,
 } from "../firebase/firebaseConfig";
 import { dataReducer } from "@/reducers/dataReducer";
-import {  onAuthStateChanged } from 'firebase/auth';
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { REDUCER_ACTION_TYPE } from "@/reducers/actions";
 import { NextRouter, useRouter } from "next/router";
@@ -15,18 +14,18 @@ type UserAuthProviderProps = {
   children: ReactNode;
 };
 
- export type CurrentUserProps = {
+export type CurrentUserProps = {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
   fullName: string,
-   interests: Array<any>;
-   Blogs: object;
+  interests: Array<any>;
+  Blogs: object;
   followers: {
     number: Array<any>
   };
-   id?: string;
+  id?: string;
 }
 
 type UserAuthContextValue = {
@@ -38,11 +37,13 @@ type UserAuthContextValue = {
 export type DataStateType = {
   usersData: any[];
   currentUser: CurrentUserProps[];
+  tags: any[];
 }
 
 export const DataState: DataStateType = {
   usersData: [],
   currentUser: [],
+  tags: []
 }
 
 const UserAuthContext = createContext<UserAuthContextValue>({
@@ -56,7 +57,8 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
   const router: NextRouter = useRouter();
   const [dataState, dispatchB] = useReducer(dataReducer, DataState);
 
-  const usersCollectionRef = collection(db, "Users")
+  const usersCollectionRef = collection(db, "Users");
+  const TabsCollectionRef = collection(db, "Tab")
 
   useEffect(() => {
     const getUsers = async () => {
@@ -64,16 +66,26 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
         const data = await getDocs(usersCollectionRef)
         const dataArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
         dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_USERS, payload: dataArray })
-        console.log(dataArray)
-
       } catch (error) {
         console.log(error)
       }
     }
     getUsers();
-    console.log(dataState.usersData);
-  }, [dataState.usersData, usersCollectionRef])
+    const getTabs = async () => {
+      try {
+        const data = await getDocs(TabsCollectionRef)
+        const tabsArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_TABS, payload: tabsArray })
+      } catch (error) {
+        console.log(error)
+      }
+    }
 
+    getTabs();
+  }, [])
+
+  console.log(dataState.tags);
+  console.log(dataState.usersData);
 
   const splitFullName = (fullName: string): { firstName: string, lastName: string } => {
     const [firstName, lastName] = fullName.split(' ');
