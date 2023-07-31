@@ -34,6 +34,7 @@ type UserAuthContextValue = {
   handleGoogleSignUp: () => Promise<void>;
 };
 
+
 export type DataStateType = {
   usersData: any[];
   currentUser: CurrentUserProps[];
@@ -58,7 +59,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
   const [dataState, dispatchB] = useReducer(dataReducer, DataState);
 
   const usersCollectionRef = collection(db, "Users");
-  const TabsCollectionRef = collection(db, "Tab")
+  const TabsCollectionRef = collection(db, "Tag")
 
   useEffect(() => {
     const getUsers = async () => {
@@ -74,8 +75,9 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     const getTabs = async () => {
       try {
         const data = await getDocs(TabsCollectionRef)
-        const tabsArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_TABS, payload: tabsArray })
+        console.log(data);
+        const tabsArray = data.docs.map((doc) => (doc.data()))
+        dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_TABS, payload: tabsArray[0].Tags })
       } catch (error) {
         console.log(error)
       }

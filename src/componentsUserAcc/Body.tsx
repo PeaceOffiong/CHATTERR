@@ -2,9 +2,9 @@ import { SearchBar } from "../componentsUserAcc";
 
 const Body = () => {
   return (
-    <header className="md:w-4/5 sm:5/6 w-auto">
+    <div className="w-4/5 sm:w-auto">
       <SearchBar />
-    </header>
+    </div>
   )
 }
 
