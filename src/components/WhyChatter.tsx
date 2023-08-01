@@ -5,13 +5,11 @@ const WhyChatter = () => {
     <>
       <div className="md:px-20">
         <h1
-          className={`tracking-wider text-3xl sm:text-4xl w-full pb-6 leading-loose text-center`}
-          style={{ fontFamily: "DM Sans, sans-serif" }}
+          className={`tracking-wider text-3xl sm:text-3xl w-full pb-6 leading-loose text-center`}
         >
-          <b className="capitalize font-black">Why you should join chatter</b>
+          <b className="capitalize font-black font-semibold">Why you should join chatter</b>
         </h1>
         <p
-          style={{ fontFamily: "DM Sans, sans-serif" }}
           className="w-full leading-relaxed text-xl"
         >
           Chatter is a multi-functional platform where authors and readers can

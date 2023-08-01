@@ -19,8 +19,7 @@ const HomeBody = () => {
             </b>
           </h1>
           <p
-            style={{ fontFamily: "DM Sans, sans-serif" }}
-            className="w-3/5 leading-relaxed text-xl md:text-2xl"
+            className="w-3/5 leading-relaxed text-xl md:text-xl"
           >
             Unleash the Power of Words, Connect with Like-minded Readers and
             Writers.

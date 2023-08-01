@@ -51,7 +51,8 @@ const Home = () => {
             href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
           />
         </Head>
-        <section className='flex h-full relative'>
+        <section className='flex w-full flex-row
+        '>
           <Navsection />
           <Body />
         </section>

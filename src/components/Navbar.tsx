@@ -35,11 +35,10 @@ export const Navbar = () => {
         <section className=" w-full flex justify-between items-center h-full ">
           <aside className="w-1/3 ">
             <h2
-              className="uppercase text-3xl text-blue-700  cursor-pointer"
-              style={{ fontFamily: "DM Sans, sans-serif" }}
+              className="uppercase text-3xl text-blue-700 font-semibold cursor-pointer"
             >
               <Link href="/">
-                <b>Chatter</b>
+                <b className="font-semibold">Chatter</b>
               </Link>
             </h2>
           </aside>

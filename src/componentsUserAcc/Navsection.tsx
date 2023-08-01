@@ -1,7 +1,4 @@
 import Link from "next/link";
-import { getDocs, collection } from "firebase/firestore";
-import { REDUCER_ACTION_TYPE } from "@/reducers/actions";
-import { db } from "../firebase/firebaseConfig";
 import { useUserAuthContext } from "@/context/userAuthContext";
 import { LeftTabs } from "../componentsUserAcc";
 import { PiBookmarksThin } from "react-icons/pi";
@@ -21,24 +18,32 @@ const Navsection = () => {
 
   const handleShowMore = () => {
     setShowItems((prevShowItems) =>
-      prevShowItems >= tags.length ? prevShowItems : tags.length
+      prevShowItems >= tags.length ?  4 : tags.length
     );
   };
+
+  const handleShowMoreLess = ():string => {
+    if(showItems == 4){
+      return "show more"
+    } else {
+      return "show less"
+    }
+  }
+
+
   return (
     <div
-      className="sm:w-20 w-auto"
+      className=" w-2/5 sm:w-20 md:w-1/5"
     >
-      <div className="scroll-content ">
+      <div className="scroll-content px-6 pt-1
+      ">
         <h2
-          className="uppercase text-3xl text-blue-700  cursor-pointer"
-          style={{ fontFamily: "DM Sans, sans-serif" }}
+          className="uppercase text-2xl text-blue-700 cursor-pointer py-2 font-medium"
         >
-          <Link href="/Home">
             <b>Chatter</b>
-          </Link>
-        </h2>
-        <div>
-          <h2>Overview</h2>
+  </h2>
+        <div className="">
+          <h2 className="pb-4 pt-2 flex gap-2"><b className="font-semibold">Overview</b></h2>
           <LeftTabs icons={<GiZBrick />} name="Feed" />
           <LeftTabs icons={<PiBookmarksThin />} name="Bookmarks" />
           <LeftTabs icons={<GoPeople />} name="Team Blogs" />
@@ -46,27 +51,28 @@ const Navsection = () => {
           <LeftTabs icons={<VscGraph />} name="Analytics" />
         </div>
         <div>
-          <h2>
+          <h2 className="py-4 flex gap-2">
             <b>
-              Trending Tags <HiArrowTrendingUp />
+              Trending Tags 
             </b>
+            <HiArrowTrendingUp />
           </h2>
-          <ul>
+          <ul className="text-sm gap-2 flex flex-col">
             {tags.slice(0, showItems).map((each, index) => {
-              return <li key={index}>{each}</li>;
+              return <li key={index} className="pl-4">{each}</li>;
             })}
-            <p className="cursor-pointer" onClick={handleShowMore}>
-              Show more
+            <p className="cursor-pointer pl-4 text-blue-500" onClick={handleShowMore}>
+            {handleShowMoreLess()}
             </p>
           </ul>
         </div>
         <div>
-          <h2>
+          <h2 className="py-4 flex gap-2">
             <b>Personal</b>
           </h2>
           <LeftTabs icons={<BsPerson />} name="Account" />
           <LeftTabs icons={<GoBell />} name="Notifications" />
-          <p className="text-red-7000">Logout</p>
+          <p className="text-red-700 py-2">Logout</p>
         </div>
       </div>
     </div>

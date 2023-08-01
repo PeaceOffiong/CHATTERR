@@ -5,10 +5,9 @@ const About = () => {
     <>
       <aside className="flex items-center justify-center md:w-3/5 flex-col gap-6">
         <h1
-          className={`tracking-wider text-3xl sm:text-4xl w-4/5 md:w-full pb-6 leading-loose`}
-          style={{ fontFamily: "DM Sans, sans-serif" }}
+          className={`tracking-wider text-3xl sm:text-3xl w-4/5 md:w-full pb-6 leading-loose`}
         >
-          <b className="capitalize font-black">About Chatter</b>
+          <b className="capitalize font-black font-semibold">About Chatter</b>
         </h1>
         <p
           style={{ fontFamily: "DM Sans, sans-serif" }}

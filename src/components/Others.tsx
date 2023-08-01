@@ -41,8 +41,8 @@ const Others = () => {
         style={{ fontFamily: "DM Sans, sans-serif" }}
         className="w-8/12 flex flex-col gap-8"
       >
-        <h1 className="text-3xl leading-relaxed decoration-black font-black w-8/12">
-          <b>Write, read and connect with great minds on chatter</b>
+        <h1 className="text-2xl leading-relaxed decoration-black font-black w-8/12 ">
+          <b className="font-semibold">Write, read and connect with great minds on chatter</b>
         </h1>
         <p
           style={{ fontFamily: "DM Sans, sans-serif" }}
