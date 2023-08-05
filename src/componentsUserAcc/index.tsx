@@ -5,3 +5,5 @@ export { default as Navsection } from "./Navsection";
 export { default as Post } from "./Post";
 export { default as SearchBar } from "./SearchBar";
 export { default as LeftTabs } from "./LeftTabs";
+export { default as Postsection } from "./Postsection";
+export { default as Recent } from "./Recent";

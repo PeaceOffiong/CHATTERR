@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useUserAuthContext } from "@/context/userAuthContext";
 import { LeftTabs } from "../componentsUserAcc";
 import { PiBookmarksThin } from "react-icons/pi";
@@ -33,15 +32,14 @@ const Navsection = () => {
 
   return (
     <div
-      className=" w-2/5 sm:w-20 md:w-1/5"
+      className="w-3/5 sm:w-2/12 md:w-1/5  border-r-2 "
     >
-      <div className="scroll-content px-6 pt-1
-      ">
+      <div className=" px-6 pt-1 h-screen section-container overflow-auto">
         <h2
           className="uppercase text-2xl text-blue-700 cursor-pointer py-2 font-medium"
         >
             <b>Chatter</b>
-  </h2>
+        </h2>
         <div className="">
           <h2 className="pb-4 pt-2 flex gap-2"><b className="font-semibold">Overview</b></h2>
           <LeftTabs icons={<GiZBrick />} name="Feed" />
@@ -59,7 +57,7 @@ const Navsection = () => {
           </h2>
           <ul className="text-sm gap-2 flex flex-col">
             {tags.slice(0, showItems).map((each, index) => {
-              return <li key={index} className="pl-4">{each}</li>;
+              return <li key={index} className="pl-4 cursor-pointer">{each}</li>;
             })}
             <p className="cursor-pointer pl-4 text-blue-500" onClick={handleShowMore}>
             {handleShowMoreLess()}
@@ -72,12 +70,11 @@ const Navsection = () => {
           </h2>
           <LeftTabs icons={<BsPerson />} name="Account" />
           <LeftTabs icons={<GoBell />} name="Notifications" />
-          <p className="text-red-700 py-2">Logout</p>
+          <p className="text-red-500 p-4 text-sm cursor-pointer">Logout</p>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default Navsection
-// md:w-1/5 w-24 scroll-container bg-blue-200

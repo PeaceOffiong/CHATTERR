@@ -41,8 +41,7 @@ const Home = () => {
   }
 
   return (
-    <div>
-      <div>
+    <div className='h-full'>
         <Head>
           <title>Home \ Chatter</title>
           <meta name="description" content="Bookworm’s heaven" />
@@ -51,12 +50,12 @@ const Home = () => {
             href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
           />
         </Head>
-        <section className='flex w-full flex-row
+        <section className='flex w-full h-full flex-row
         '>
           <Navsection />
           <Body />
         </section>
-      </div>
+
     </div>
   )
 }

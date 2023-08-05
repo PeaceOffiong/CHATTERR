@@ -8,9 +8,9 @@ type Props = {
 
 const LeftTabs: React.FC<Props> = ({ icons, name }) => {
     return (
-        <section className="flex items-center  h-8 gap-2 pl-4 w-auto">
+        <section className="flex items-center  h-8 gap-2 pl-4 w-auto cursor-pointer">
             <div>{icons}</div>
-            <h4 className="text-sm">{name}</h4>
+            <h4 className="text-sm ">{name}</h4>
         </section>
     )
 }
