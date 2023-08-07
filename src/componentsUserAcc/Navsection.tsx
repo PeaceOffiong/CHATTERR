@@ -28,13 +28,11 @@ const Navsection = () => {
       return "show less"
     }
   }
-
-
   return (
     <div
       className="w-3/5 sm:w-2/12 md:w-1/5  border-r-2 "
     >
-      <div className=" px-6 pt-1 h-screen section-container overflow-auto">
+      <div className=" px-6 pt-1 h-screen section-container overflow-auto overflow-x-hidden">
         <h2
           className="uppercase text-2xl text-blue-700 cursor-pointer py-2 font-medium"
         >

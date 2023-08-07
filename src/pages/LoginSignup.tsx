@@ -74,7 +74,7 @@ const LoginSignup = () => {
   const signUpWithEmail = (person: CurrentUserProps) => {
     addDoc(usersCollectionRef, person)
     sendVerificationCode(person.email);
-    localStorage.setitem("CurrentUser", person.email)
+    localStorage.setItem("token", person.email)
     dispatchB({
       type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
       payload: person
