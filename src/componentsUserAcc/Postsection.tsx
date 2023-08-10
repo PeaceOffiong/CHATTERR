@@ -1,10 +1,53 @@
 import { BsPencil } from "react-icons/bs";
 import { Post } from "../componentsUserAcc";
 import { useUserAuthContext } from "@/context/userAuthContext";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
+import { useState, useEffect } from "react";
+
+interface Post {
+  Tags: any[];
+  postFrom: string;
+  text: string;
+  timestamp: number;
+}
 
 const Postsection = () => {
-  const {dataState} =useUserAuthContext()
-  console.log(dataState.currentUser[0])
+  const [timelinePost, setTimelinePost] = useState<Post[]>([])
+  const { dataState } = useUserAuthContext()
+  const {currentUser} = dataState
+
+  const usersCollectionRef = collection(db, "Posts");
+
+
+  useEffect(() => {
+    const getTimelinePosts = async () => {
+      try {
+        const data = await getDocs(usersCollectionRef)
+        console.log(data)
+        const dataArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+
+        console.log(dataArray);
+
+        const followerPosts = dataArray
+          .filter((post) => currentUser[0].followers.some((follower) => follower.name === post))
+        //   .filter((post) => !lastTimestamp || post.timestamp < lastTimestamp)
+        //   .sort((a, b) => b.timestamp - a.timestamp);
+
+        // return followerPosts.slice(0, pageSize);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getTimelinePosts();
+  }, [])
+
+  if(timelinePost.length == 0){
+    return <> No Post, Follow friends to see their posts </>
+  }
+
+
   return (
     <div className="sm:w-11/12 md:w-4/5">
 
@@ -40,7 +83,7 @@ const Postsection = () => {
         </div>
       </div>
 
-      <Post />
+      <Post post={timelinePost} />
     </div>
   )
 }

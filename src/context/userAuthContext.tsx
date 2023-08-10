@@ -22,9 +22,7 @@ export type CurrentUserProps = {
   fullName: string,
   interests: Array<any>;
   Blogs: object;
-  followers: {
-    number: Array<any>
-  };
+  followers: Array<any>
   id?: string;
 }
 
