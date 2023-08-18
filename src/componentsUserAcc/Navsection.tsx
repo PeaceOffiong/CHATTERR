@@ -10,7 +10,11 @@ import { BsPerson } from "react-icons/bs";
 import { GoBell } from "react-icons/go";
 import { useState } from "react";
 
-const Navsection = () => {
+type NavSectionProps = {
+  showNavsection: boolean;
+}
+
+const Navsection: React.FC<NavSectionProps> = ({showNavsection}) => {
   const [showItems, setShowItems] = useState<number>(4);
   const { dataState } = useUserAuthContext();
   const { tags } = dataState;
@@ -30,11 +34,11 @@ const Navsection = () => {
   }
   return (
     <div
-      className="w-3/5 sm:w-2/12 md:w-1/5  border-r-2 "
+      className={`${showNavsection ? `block`: ``} hidden sm:block w-4/6 shrink-0 sm:w-2/12 md:w-1/5 border-r-2 m-0`}
     >
       <div className=" px-6 pt-1 h-screen section-container overflow-auto overflow-x-hidden">
         <h2
-          className="uppercase text-2xl text-blue-700 cursor-pointer py-2 font-medium"
+          className="uppercase sm:text-2xl text-xl text-blue-700 cursor-pointer py-2 font-medium"
         >
             <b>Chatter</b>
         </h2>
@@ -68,7 +72,7 @@ const Navsection = () => {
           </h2>
           <LeftTabs icons={<BsPerson />} name="Account" />
           <LeftTabs icons={<GoBell />} name="Notifications" />
-          <p className="text-red-500 p-4 text-sm cursor-pointer">Logout</p>
+          <p className="text-red-500 p-4 text-sm cursor-pointer">Logout </p>
         </div>
       </div>
     </div>

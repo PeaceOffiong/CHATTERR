@@ -1,18 +1,27 @@
 import { Body, Navsection, SearchBar } from '@/componentsUserAcc';
 import { useUserAuthContext } from '@/context/userAuthContext';
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { db } from '@/firebase/firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
-
 
 const Home = () => {
   const { dataState, dispatchB } = useUserAuthContext();
   const { currentUser } = dataState;
 
+  const [showNavsection, setShowNavsection] = useState<boolean>(false);
+  const [touchStarts, setTouchStart] = useState(null);
+  const [touchEnds, setTouchEnd] = useState(null);
+
+  console.log(showNavsection)
+
+  const swipe = () => {
+    
+  }
+
   useEffect(() => {
-    const token = localStorage.getItem("token");  
+    const token = localStorage.getItem("token");
     const fetchUser = async (token: string) => {
       try {
         const q = query(collection(db, 'Users'), where('email', '==', token));
@@ -39,27 +48,22 @@ const Home = () => {
     }
   }, [])
 
-  if (currentUser.length < 0) {
-    return <h1>Loading</h1>
-  }
-
   return (
-    <div className='h-full'>
-        <Head>
-          <title>Home \ Chatter</title>
-          <meta name="description" content="Bookworm’s heaven" />
-          <link
-            rel="icon"
-            href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
-          />
-        </Head>
-        <section className='flex w-full h-full flex-row
-        '>
-          <Navsection />
-          <Body />
-        </section>
+    <>
+      <Head>
+        <title>Home \ Chatter</title>
+        <meta name="description" content="Bookworm’s heaven" />
+        <link
+          rel="icon"
+          href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
+        />
+      </Head>
+      <section className={`h-full w-screen flex section-container overflow-hidden`}>
+        <Navsection showNavsection={showNavsection} />
+        <Body showNavsection={showNavsection} />
+      </section>
 
-    </div>
+    </>
   )
 }
 
