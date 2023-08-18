@@ -56,9 +56,7 @@ const LoginSignup = () => {
         fullName: `${firstName} ${lastName}`,
         interests: [],
         Blogs: {},
-        followers: {
-          number: []
-        },
+        followers: [],
 
       };
       signUpWithEmail(Person)
@@ -159,7 +157,7 @@ const LoginSignup = () => {
       style={{ fontFamily: "DM Sans, sans-serif" }}
       className="md:h-screen md:overflow-hidden h-full"
     >
-      <div className="fixed top-0 left-0 right-0 z-10 md:hidden">
+      <div className="fixed top-0 left-0 right-0 z-10 hidden">
         <Navbar />
       </div>
 
@@ -176,7 +174,7 @@ const LoginSignup = () => {
           style={{
             backgroundImage: `url("https://res.cloudinary.com/du8oaagwi/image/upload/v1686066266/ChatterImg_ev0xcp.svg")`
           }}
-          className="relative w-full md:w-2/5 h-screen md:h-full bg-cover bg-no-repeat bg-center "
+          className="relative w-full md:w-2/5 h-screen md:h-full hidden md:block bg-cover bg-no-repeat bg-center "
         >
 
           <div className="absolute inset-0 h-full bg-black bg-opacity-30 text-white flex items-center justify-center flex-col">
@@ -199,7 +197,7 @@ const LoginSignup = () => {
         </div>
 
         <section
-          className="w-full h-full  md:w-3/5 md:h-screen flex flex-col items-center py-4 overflow-hidden relative"
+          className="w-full h-full  md:w-3/5 md:h-screen flex flex-col md:justify-center items-center py-4 overflow-hidden relative"
           id="formSection"
         >
           <div className="h-10 flex flex-col justify-evenly sm:w-3/4 w-4/5 relative">

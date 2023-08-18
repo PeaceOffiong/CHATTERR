@@ -1,4 +1,4 @@
-import { useContext, ReactNode, createContext, useReducer, useEffect } from "react";
+import { useContext, ReactNode, createContext, useReducer, useEffect, useState } from "react";
 import {
   auth,
   db,
@@ -37,18 +37,20 @@ export type DataStateType = {
   usersData: any[];
   currentUser: CurrentUserProps[];
   tags: any[];
+  loading: boolean;
 }
 
 export const DataState: DataStateType = {
   usersData: [],
   currentUser: [],
-  tags: []
+  tags: [],
+  loading: true
 }
 
 const UserAuthContext = createContext<UserAuthContextValue>({
   dataState: DataState,
   dispatchB: () => { },
-  handleGoogleSignUp: async () => { }
+  handleGoogleSignUp: async () => { },
 });
 
 
@@ -84,7 +86,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     getTabs();
   }, [])
 
-  console.log(dataState.tags);
   console.log(dataState.usersData);
 
   const splitFullName = (fullName: string): { firstName: string, lastName: string } => {
@@ -121,7 +122,11 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
       })
       .catch((error) => {
         console.error("An error occurred:", error);
-      });
+      }).finally(() => {
+        dispatchB({
+          type: REDUCER_ACTION_TYPE.UPDATE_LOADING
+        })
+      })
   };
 
   const contextV: UserAuthContextValue = {

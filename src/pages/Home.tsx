@@ -22,6 +22,9 @@ const Home = () => {
           const userDoc = querySnapshot.docs[0];
           const user = userDoc.data();
           dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: user })
+          dispatchB({
+            type: REDUCER_ACTION_TYPE.UPDATE_LOADING
+          })
         } else {
           return null;
         }

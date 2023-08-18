@@ -1,41 +1,43 @@
 import { Dispatch } from "react";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
+import { getDocs, query, collection, where } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
 
 export const accessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<any>, loginEmail: string, loginPassword: string, usersData: any[]) => {
     return new Promise((resolve) => {
-        const isUserOnDB = usersData.find(person => person.email === loginEmail);
-        console.log(isUserOnDB)
-        if (!isUserOnDB) {
-            dispatch({
-                type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_EMAIL,
-                payload: "Email does not exist on database"
-            });
-            resolve(false)
-        } else {
-            dispatch({
-                type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_EMAIL,
-                payload: " "
-            });
-        }
-        if (isUserOnDB.password !== loginPassword) {
-            dispatch({
-                type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_PASSWORD,
-                payload: "Password Incorrect"
-            });
-             resolve(false)
-        } else {
-            dispatchB({
-                type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
-                payload: isUserOnDB
+        const usersCollectionRef = collection(db, "Users");
+
+        const queryRef = query(usersCollectionRef,
+            where("email", "==", loginEmail),
+            where("password", "==", loginPassword)
+        );
+
+        getDocs(queryRef)
+            .then((querySnapshot) => {
+                if (!querySnapshot.empty) {
+                    querySnapshot.forEach((doc) => {
+                        dispatchB({
+                            type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: [doc.id, doc.data()]
+                        })
+                        dispatch({
+                            type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_EMAIL,
+                            payload: " "
+                        });
+                    });
+                    resolve(true)
+                } else {
+                    dispatch({
+                        type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_EMAIL,
+                        payload: "Email does not exist on database"
+                    });
+                    resolve(false)
+                    console.log("No user found with the given username and password.");
+                }
             })
-            dispatch({
-                type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_PASSWORD,
-                payload: " "
+            .catch((error) => {
+                console.error("Error searching for user:", error);
             });
-            resolve(true) 
-        }
+
         return true
     })
-    
-
 }

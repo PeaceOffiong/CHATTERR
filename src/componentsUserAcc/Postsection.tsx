@@ -15,7 +15,9 @@ interface Post {
 const Postsection = () => {
   const [timelinePost, setTimelinePost] = useState<Post[]>([])
   const { dataState } = useUserAuthContext()
-  const {currentUser} = dataState
+  const { currentUser, loading } = dataState
+  console.log(currentUser);
+  console.log(loading);
 
   const usersCollectionRef = collection(db, "Posts");
 
@@ -29,23 +31,26 @@ const Postsection = () => {
 
         console.log(dataArray);
 
-        const followerPosts = dataArray
-          .filter((post) => currentUser[0].followers.some((follower) => follower.name === post))
+        //@ts-ignore
+        const followerPosts = await dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom))
         //   .filter((post) => !lastTimestamp || post.timestamp < lastTimestamp)
         //   .sort((a, b) => b.timestamp - a.timestamp);
 
-        // return followerPosts.slice(0, pageSize);
+        // return followerPosts.slice(0, pageSize);(
+        console.log(followerPosts)
       } catch (error) {
         console.log(error)
       }
     }
 
-    getTimelinePosts();
-  }, [])
 
-  if(timelinePost.length == 0){
-    return <> No Post, Follow friends to see their posts </>
-  }
+    if (loading) {
+      return;
+    } else {
+      getTimelinePosts();  
+    }
+  }, [loading, currentUser])
+
 
 
   return (
@@ -82,8 +87,7 @@ const Postsection = () => {
           <div className="w-12 rounded h-1 absolute bottom-0"></div>
         </div>
       </div>
-
-      <Post post={timelinePost} />
+      {loading ? <p> No Post, Follow friends to see their posts</p> : <Post post={timelinePost} />}
     </div>
   )
 }
