@@ -1,7 +1,7 @@
 import { Body, Navsection, SearchBar } from '@/componentsUserAcc';
 import { useUserAuthContext } from '@/context/userAuthContext';
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from '@/firebase/firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
@@ -11,13 +11,35 @@ const Home = () => {
   const { currentUser } = dataState;
 
   const [showNavsection, setShowNavsection] = useState<boolean>(false);
-  const [touchStarts, setTouchStart] = useState(null);
-  const [touchEnds, setTouchEnd] = useState(null);
+  const [touchStarts, setTouchStart] = useState<any>(null);
+  const [touchEnds, setTouchEnd] = useState<any>(null);
 
-  console.log(showNavsection)
+  console.log(showNavsection);
+  console.log(touchEnds, touchStarts);
 
-  const swipe = () => {
-    
+  const minSwipeDistance = 50;
+
+  const touchStart = (e:React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const touchMove = (e:React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  };
+
+  const touchEnd = () => {
+    console.log("it has ended")
+    if (!touchStarts || !touchEnds) return
+    const distance = touchStarts - touchEnds;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      setShowNavsection(true)
+    } else if (isRightSwipe){
+      setShowNavsection(false);
+    }
   }
 
   useEffect(() => {
@@ -58,7 +80,13 @@ const Home = () => {
           href="https://res.cloudinary.com/du8oaagwi/image/upload/v1686066271/favicon_nmm0r9.png"
         />
       </Head>
-      <section className={`h-full w-screen flex section-container overflow-hidden`}>
+      <section
+        onTouchEnd={touchEnd}
+        onTouchStart={touchStart}
+        onTouchMove={touchMove}
+        className={`h-full w-screen flex section-container overflow-hidden`}
+
+      >
         <Navsection showNavsection={showNavsection} />
         <Body showNavsection={showNavsection} />
       </section>

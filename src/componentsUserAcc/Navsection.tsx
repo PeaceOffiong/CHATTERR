@@ -34,7 +34,7 @@ const Navsection: React.FC<NavSectionProps> = ({showNavsection}) => {
   }
   return (
     <div
-      className={`${showNavsection ? `block`: ``} hidden sm:block w-4/6 shrink-0 sm:w-2/12 md:w-1/5 border-r-2 m-0`}
+      className={`${showNavsection ? `hidden` :`block` }  sm:block w-4/6 shrink-0 sm:w-2/12 md:w-1/5 border-r-2 m-0 `}
     >
       <div className=" px-6 pt-1 h-screen section-container overflow-auto overflow-x-hidden">
         <h2
