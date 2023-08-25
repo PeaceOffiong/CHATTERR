@@ -1,7 +1,7 @@
 
 const Foryou = () => {
   return (
-    <div>Foryou</div>
+    <div className="w-full shrink-0 h-96">Foryou</div>
   )
 }
 

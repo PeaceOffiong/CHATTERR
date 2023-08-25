@@ -1,5 +1,5 @@
 import { BsPencil } from "react-icons/bs";
-import { Post } from "../componentsUserAcc";
+import { Foryou, Featured, Recent} from "../componentsUserAcc";
 import { useUserAuthContext } from "@/context/userAuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
@@ -12,14 +12,30 @@ interface Post {
   timestamp: number;
 }
 
+interface TabsProps {
+  name: string,
+  active: boolean,
+}
+
+
 const Postsection = () => {
   const [timelinePost, setTimelinePost] = useState<Post[]>([])
+  const [lastTimestamp, setLastTimestamp] = useState<number>(1609459200000)
+  const [tabs, setTabs] = useState<TabsProps[]>([
+    {name:"For You", active: true}, 
+    {name:"Featured", active: false}, 
+    {name:"Recent", active: false}
+  ]);
   const { dataState } = useUserAuthContext()
   const { currentUser, loading } = dataState
   console.log(currentUser);
   console.log(loading);
 
   const usersCollectionRef = collection(db, "Posts");
+
+  const handleSwitchTabs = () =>{
+
+  }
 
 
   useEffect(() => {
@@ -32,11 +48,9 @@ const Postsection = () => {
         console.log(dataArray);
 
         //@ts-ignore
-        const followerPosts = await dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom))
-        //   .filter((post) => !lastTimestamp || post.timestamp < lastTimestamp)
-        //   .sort((a, b) => b.timestamp - a.timestamp);
-
-        // return followerPosts.slice(0, pageSize);(
+        const followerPosts = await dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom || currentUser[0].email === post.postFrom))
+        .filter((post) => !lastTimestamp || post.timeStamp < lastTimestamp)
+        .sort((a, b) => b.timestamp - a.timestamp);
         console.log(followerPosts)
       } catch (error) {
         console.log(error)
@@ -74,22 +88,28 @@ const Postsection = () => {
       </div>
 
       <div className="flex justify-around mt-6 border-2 rounded h-12 items-center text-sm font-semibold">
-        <div className="h-full flex items-center justify-center relative cursor-pointer">
-          <p>For you</p>
-          <div className="w-12 bg-blue-600 rounded h-1 absolute bottom-0"></div>
+        {tabs.map((tab, indx) =>{
+          return <div key={indx} onClick={handleSwitchTabs} name="For you" className="h-full flex items-center justify-center relative cursor-pointer" >
+          <p>{tab.name}</p>
+          <div className="w-12 bg-blue-600 rounded h-1 absolute bottom-0"></div>        
         </div>
-        <div className="h-full flex items-center justify-center relative cursor-pointer">
+        })}
+        
+        <div onClick={handleSwitchTabs}  name="Featured" className="h-full flex items-center justify-center relative cursor-pointer">
           <p>Featured</p>
           <div className="w-12 rounded h-1 absolute bottom-0"></div>
         </div>
-        <div className="h-full flex items-center justify-center relative cursor-pointer">
+        <div onClick={handleSwitchTabs} name="Recent" className="h-full flex items-center justify-center relative cursor-pointer">
           <p>Recent</p>
           <div className="w-12 rounded h-1 absolute bottom-0"></div>
         </div>
       </div>
-      {loading ? <p> No Post, Follow friends to see their posts</p> : <Post post={timelinePost} />}
+      {loading ? <p> No Post, Follow friends to see their posts</p> : <div className="section-container overflow-hidden relative"><div className="flex w-full"><Foryou/><Featured/><Recent/></div></div>   
+       }
     </div>
   )
 }
 
 export default Postsection;
+
+{/* <Post post={timelinePost}/> */}

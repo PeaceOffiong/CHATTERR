@@ -10,12 +10,9 @@ const Home = () => {
   const { dataState, dispatchB } = useUserAuthContext();
   const { currentUser } = dataState;
 
-  const [showNavsection, setShowNavsection] = useState<boolean>(false);
+  const [showNavsection, setShowNavsection] = useState<boolean>(true);
   const [touchStarts, setTouchStart] = useState<any>(null);
   const [touchEnds, setTouchEnd] = useState<any>(null);
-
-  console.log(showNavsection);
-  console.log(touchEnds, touchStarts);
 
   const minSwipeDistance = 50;
 
@@ -29,7 +26,6 @@ const Home = () => {
   };
 
   const touchEnd = () => {
-    console.log("it has ended")
     if (!touchStarts || !touchEnds) return
     const distance = touchStarts - touchEnds;
     const isLeftSwipe = distance > minSwipeDistance;
