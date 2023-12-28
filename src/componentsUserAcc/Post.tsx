@@ -1,13 +1,41 @@
+import Image from "next/image";
 
 interface PostProps {
-  post: any[];
+  post: string;
+  postImgSrc?: string;
+  posterImg: string;
+  posterName: string;
+  posterJob: string;
+  postDate: string;
 }
 
-const Post: React.FC<PostProps> = ({ post }) => {
+const Post: React.FC<PostProps> = ({ post, posterName, posterImg, posterJob, postDate, postImgSrc}) => {
   return (
-    post.map((each) => {
-      return <div>{each}</div>
-    })
+    <>
+      <div>
+        <Image src={posterImg} alt="" />
+        <div>
+          <h2>{posterName}</h2>
+          <small>{posterJob}, <span>{ postDate}</span></small>
+        </div>
+      </div>
+      <div>
+        <h3>
+
+        </h3>
+        <small>
+
+        </small>
+        <p>
+
+        </p>
+        {postImgSrc && <Image src={postImgSrc} alt="" />}
+      </div>
+      <div>
+
+      </div>
+
+    </>
   )
 }
 

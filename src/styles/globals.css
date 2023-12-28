@@ -10,3 +10,15 @@
   margin:0;
   box-sizing: border-box;
 }
+
+.custom-translateFy {
+  transform: translateX(0)
+}
+
+.custom-translateFe {
+  transform: translateX(-100%)
+}
+
+.custom-translateRe {
+  transform: translateX(-200%)
+}

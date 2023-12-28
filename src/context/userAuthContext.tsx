@@ -1,4 +1,4 @@
-import { useContext, ReactNode, createContext, useReducer, useEffect, useState } from "react";
+import { useContext, ReactNode, createContext, useReducer, useEffect, useState, SetStateAction } from "react";
 import {
   auth,
   db,
@@ -30,6 +30,11 @@ type UserAuthContextValue = {
   dataState: DataStateType;
   dispatchB: React.Dispatch<any>;
   handleGoogleSignUp: () => Promise<void>;
+  touchStart: (e: React.TouchEvent) => void;
+  touchMove: (e: React.TouchEvent) => void;
+  touchEnd: (e: React.TouchEvent) => void;
+  showNavsection: boolean;
+  setShowNavsection: React.Dispatch<SetStateAction<boolean>>;
 };
 
 
@@ -51,6 +56,11 @@ const UserAuthContext = createContext<UserAuthContextValue>({
   dataState: DataState,
   dispatchB: () => { },
   handleGoogleSignUp: async () => { },
+  touchStart: (e) => {},
+  touchEnd: (e) => {},
+  touchMove: (e) => { },
+  showNavsection: true,
+  setShowNavsection: () => {},
 });
 
 
@@ -129,10 +139,43 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
       })
   };
 
+  const [touchStarts, setTouchStart] = useState<any>(null);
+  const [touchEnds, setTouchEnd] = useState<any>(null);
+  const [showNavsection, setShowNavsection] = useState<boolean>(true);
+
+  const minSwipeDistance = 50;
+
+  const touchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const touchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  };
+
+  const touchEnd = () => {
+    if (!touchStarts || !touchEnds) return
+    const distance = touchStarts - touchEnds;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance
+
+    if (isLeftSwipe) {
+      setShowNavsection(true)
+    } else if (isRightSwipe) {
+      setShowNavsection(false);
+    }
+  }
+
   const contextV: UserAuthContextValue = {
     dataState,
     dispatchB,
     handleGoogleSignUp,
+    touchEnd,
+    touchStart,
+    touchMove,
+    showNavsection,
+    setShowNavsection
   }
 
   return (

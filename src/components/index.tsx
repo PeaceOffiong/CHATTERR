@@ -9,3 +9,4 @@ export { default as InputForm } from "./InputForm";
 export { default as Login } from "./Login";
 export { default as SignUp } from "./SignUp";
 export { default as EmailConfirm } from "./EmailConfirm";
+export { default as LandingPage } from "./LandingPage";

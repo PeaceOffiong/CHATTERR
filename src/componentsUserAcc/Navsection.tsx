@@ -9,24 +9,23 @@ import { HiArrowTrendingUp } from "react-icons/hi2";
 import { BsPerson } from "react-icons/bs";
 import { GoBell } from "react-icons/go";
 import { useState } from "react";
+import { NavbarVisibilityProps } from "@/types/shared";
+import Link from 'next/link';
+import { privateRoutes } from "@/utils/constants";
 
-type NavSectionProps = {
-  showNavsection: boolean;
-}
-
-const Navsection: React.FC<NavSectionProps> = ({showNavsection}) => {
+const Navsection: React.FC<NavbarVisibilityProps> = ({ showNavsection, setShowNavSection }) => {
   const [showItems, setShowItems] = useState<number>(4);
   const { dataState } = useUserAuthContext();
   const { tags } = dataState;
 
   const handleShowMore = () => {
     setShowItems((prevShowItems) =>
-      prevShowItems >= tags.length ?  4 : tags.length
+      prevShowItems >= tags.length ? 4 : tags.length
     );
   };
 
-  const handleShowMoreLess = ():string => {
-    if(showItems == 4){
+  const handleShowMoreLess = (): string => {
+    if (showItems == 4) {
       return "show more"
     } else {
       return "show less"
@@ -34,26 +33,38 @@ const Navsection: React.FC<NavSectionProps> = ({showNavsection}) => {
   }
   return (
     <div
-      className={`${showNavsection ? `hidden` :`block` }  sm:block w-4/6 shrink-0 sm:w-2/12 md:w-1/5 border-r-2 m-0 `}
+      className={`${showNavsection ? `hidden` : `block`}  sm:block w-4/6 shrink-0 sm:w-2/12 md:w-1/5 border-r-2 m-0 overflow-x-hidden`}
     >
       <div className=" px-6 pt-1 h-screen section-container overflow-auto overflow-x-hidden">
         <h2
-          className="uppercase sm:text-2xl text-xl text-blue-700 cursor-pointer py-2 font-medium"
+          className="uppercase sm:text-2xl text-base text-blue-700 cursor-pointer py-2 font-medium  "
         >
-            <b>Chatter</b>
+          <b
+            onClick={() => setShowNavSection(!showNavsection)}
+          >Chatter</b>
         </h2>
-        <div className="">
-          <h2 className="pb-4 pt-2 flex gap-2"><b className="font-semibold">Overview</b></h2>
-          <LeftTabs icons={<GiZBrick />} name="Feed" />
-          <LeftTabs icons={<PiBookmarksThin />} name="Bookmarks" />
-          <LeftTabs icons={<GoPeople />} name="Team Blogs" />
-          <LeftTabs icons={<BsEnvelopeOpen />} name="Drafts" />
-          <LeftTabs icons={<VscGraph />} name="Analytics" />
-        </div>
+        <div><h2 className="pb-4 pt-2 flex gap-2"><b
+          className="font-semibold">Overview</b></h2>
+          <Link href={privateRoutes.feed}>
+            <LeftTabs icons={<GiZBrick />} name="Feed" />
+          </Link>
+          <Link href={privateRoutes.bookmark}>
+            <LeftTabs icons={<PiBookmarksThin />} name="Bookmarks" />
+          </Link>
+          <Link href={privateRoutes.teamblogs}>
+            <LeftTabs icons={<GoPeople />} name="Team Blogs" />
+          </Link>
+          <Link href={privateRoutes.draft}>
+            <LeftTabs icons={<BsEnvelopeOpen />} name="Drafts" />
+          </Link>
+          <Link href={privateRoutes.analytics}>
+            <LeftTabs icons={<VscGraph />} name="Analytics" />
+          </Link>
+          </div>
         <div>
           <h2 className="py-4 flex gap-2">
             <b>
-              Trending Tags 
+              Trending Tags
             </b>
             <HiArrowTrendingUp />
           </h2>
@@ -62,7 +73,7 @@ const Navsection: React.FC<NavSectionProps> = ({showNavsection}) => {
               return <li key={index} className="pl-4 cursor-pointer">{each}</li>;
             })}
             <p className="cursor-pointer pl-4 text-blue-500" onClick={handleShowMore}>
-            {handleShowMoreLess()}
+              {handleShowMoreLess()}
             </p>
           </ul>
         </div>

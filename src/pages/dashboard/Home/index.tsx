@@ -1,43 +1,19 @@
 import { Body, Navsection, SearchBar } from '@/componentsUserAcc';
 import { useUserAuthContext } from '@/context/userAuthContext';
 import Head from "next/head";
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import { db } from '@/firebase/firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
+import NavLayout from '@/componentsUserAcc/NavLayout';
 
 const Home = () => {
-  const { dataState, dispatchB } = useUserAuthContext();
+  const { dataState, dispatchB, touchEnd,
+    touchStart,
+    touchMove, showNavsection,
+    setShowNavsection } = useUserAuthContext();
   const { currentUser } = dataState;
-
-  const [showNavsection, setShowNavsection] = useState<boolean>(true);
-  const [touchStarts, setTouchStart] = useState<any>(null);
-  const [touchEnds, setTouchEnd] = useState<any>(null);
-
-  const minSwipeDistance = 50;
-
-  const touchStart = (e:React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
-  };
-
-  const touchMove = (e:React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX)
-  };
-
-  const touchEnd = () => {
-    if (!touchStarts || !touchEnds) return
-    const distance = touchStarts - touchEnds;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance
-
-    if (isLeftSwipe) {
-      setShowNavsection(true)
-    } else if (isRightSwipe){
-      setShowNavsection(false);
-    }
-  }
-
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     const fetchUser = async (token: string) => {
@@ -80,13 +56,11 @@ const Home = () => {
         onTouchEnd={touchEnd}
         onTouchStart={touchStart}
         onTouchMove={touchMove}
-        className={`h-full w-screen flex section-container overflow-hidden`}
-
-      >
-        <Navsection showNavsection={showNavsection} />
-        <Body showNavsection={showNavsection} />
+        className={`h-full flex section-container overflow-x-hidden`}>
+        <NavLayout>
+          <Body showNavsection={showNavsection} setShowNavSection={setShowNavsection} />
+        </NavLayout>     
       </section>
-
     </>
   )
 }

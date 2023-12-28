@@ -1,15 +1,32 @@
 import { BsPencil } from "react-icons/bs";
 import { Foryou, Featured, Recent} from "../componentsUserAcc";
 import { useUserAuthContext } from "@/context/userAuthContext";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, query, getDocs, orderBy, limit } from 'firebase/firestore';
 import { db } from "../firebase/firebaseConfig";
 import { useState, useEffect } from "react";
 
-interface Post {
+export type timeStamptype = {
+  nanoseconds: number;
+  seconds: number;
+}
+
+export interface comments{
+  comment: string;
+  name: string;
+  timeStamp: timeStamptype; 
+}
+
+export interface Post {
+  id: string;
   Tags: any[];
+  comments: comments[];
   postFrom: string;
   text: string;
-  timestamp: number;
+  timeStamp: timeStamptype;
+}
+
+interface TabDataAttributes {
+  name: string;
 }
 
 interface TabsProps {
@@ -18,45 +35,80 @@ interface TabsProps {
 }
 
 
-const Postsection = () => {
-  const [timelinePost, setTimelinePost] = useState<Post[]>([])
+const Postsection : React.FC = () => {
+  const [forYouPost, setForYouPost] = useState<Post[]>([]);
+  const [featuredPost, setFeaturedPost] = useState<Post[]>([]);
+  const [recentPost, setRecentPost] = useState<Post[]>([]);
+  console.log(recentPost, featuredPost, forYouPost);
+
   const [lastTimestamp, setLastTimestamp] = useState<number>(1609459200000)
   const [tabs, setTabs] = useState<TabsProps[]>([
     {name:"For You", active: true}, 
     {name:"Featured", active: false}, 
     {name:"Recent", active: false}
   ]);
+  const [dynamicClass, setDynamicClass] = useState<string>("custom-translateFy")
   const { dataState } = useUserAuthContext()
-  const { currentUser, loading } = dataState
+  const { currentUser, loading } = dataState;
   console.log(currentUser);
-  console.log(loading);
 
-  const usersCollectionRef = collection(db, "Posts");
 
-  const handleSwitchTabs = () =>{
+  const handleSwitchTabs = (index: number) => {
+    console.log(index)
+    setTabs(prevTabs => {
+      const updatedTabs = prevTabs.map((tab, indx) => ({
+        ...tab,
+        active: indx === index,
+      }));
 
+      let dynamicClassValue = "custom-translateFy";
+      if (updatedTabs[1].active) {
+        dynamicClassValue = "custom-translateFe";
+      } else if (updatedTabs[2].active) {
+        dynamicClassValue = "custom-translateRe";
+      }
+
+      setDynamicClass(dynamicClassValue);
+      return updatedTabs;
+    });
   }
 
 
   useEffect(() => {
     const getTimelinePosts = async () => {
       try {
-        const data = await getDocs(usersCollectionRef)
-        console.log(data)
-        const dataArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        const postsCollection = collection(db, 'Posts')
 
+        const q = query(postsCollection, orderBy('timeStamp', 'desc'), limit(10))
+        const querySnapshot = await getDocs(q);
+        const dataArray = querySnapshot.docs.map((docs) => ({ ...docs.data(), id: docs.id })) as Post[]
         console.log(dataArray);
 
-        //@ts-ignore
+        //For you Post  
         const followerPosts = await dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom || currentUser[0].email === post.postFrom))
-        .filter((post) => !lastTimestamp || post.timeStamp < lastTimestamp)
-        .sort((a, b) => b.timestamp - a.timestamp);
-        console.log(followerPosts)
+        setForYouPost([...followerPosts]);
+
+        //Featured
+        const featuredPosts = dataArray.filter((each) => {
+          return each.comments.some((comment) => comment.name === currentUser[0].email);
+        })
+        setFeaturedPost(featuredPosts);
+
+        //Recent
+        const recentPosts = dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom || currentUser[0].email === post.postFrom))
+        setRecentPost(recentPosts)
+
+
+        // if (recentPost.length > 0) {
+        //   setLastTimestamp(recentPost[0].timeStamp.seconds)
+        // } else {
+        //   setLastTimestamp(1609459200000)
+        // }
+
       } catch (error) {
         console.log(error)
       }
     }
-
 
     if (loading) {
       return;
@@ -65,17 +117,15 @@ const Postsection = () => {
     }
   }, [loading, currentUser])
 
-
-
   return (
     <div className="sm:w-11/12 md:w-4/5">
 
       <div className="flex justify-between items-center w-full">
-      <div>
+      <div className= "px-2">
         <h2 className="text-xl py-2">
           <b>FEED</b>
         </h2>
-        <p className="text-sm">
+        <p className="text-sm text-grey-300">
           Explore different content you'd love
         </p>
       </div>
@@ -89,22 +139,14 @@ const Postsection = () => {
 
       <div className="flex justify-around mt-6 border-2 rounded h-12 items-center text-sm font-semibold">
         {tabs.map((tab, indx) =>{
-          return <div key={indx} onClick={handleSwitchTabs} name="For you" className="h-full flex items-center justify-center relative cursor-pointer" >
+          return <div key={indx} onClick={() => handleSwitchTabs(indx)} data-name="For you" className="h-full flex items-center justify-center relative cursor-pointer" >
           <p>{tab.name}</p>
-          <div className="w-12 bg-blue-600 rounded h-1 absolute bottom-0"></div>        
+            <div className={`w-12 ${tabs[indx].active ?`bg-blue-600` : `hidden`} rounded h-1 absolute bottom-0`}></div>        
         </div>
         })}
-        
-        <div onClick={handleSwitchTabs}  name="Featured" className="h-full flex items-center justify-center relative cursor-pointer">
-          <p>Featured</p>
-          <div className="w-12 rounded h-1 absolute bottom-0"></div>
-        </div>
-        <div onClick={handleSwitchTabs} name="Recent" className="h-full flex items-center justify-center relative cursor-pointer">
-          <p>Recent</p>
-          <div className="w-12 rounded h-1 absolute bottom-0"></div>
-        </div>
+
       </div>
-      {loading ? <p> No Post, Follow friends to see their posts</p> : <div className="section-container overflow-hidden relative"><div className="flex w-full"><Foryou/><Featured/><Recent/></div></div>   
+      {loading ? <p> No Post, Follow friends to see their posts</p> : <div className="section-container overflow-hidden relative"><div className={`flex w-full ${dynamicClass}`}><Foryou forYouPost={forYouPost}/><Featured featuredPost={featuredPost} /><Recent recentPost={recentPost}/></div></div>   
        }
     </div>
   )

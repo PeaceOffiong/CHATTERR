@@ -3,13 +3,13 @@ import { Navbar, EmailConfirm, Login, SignUp } from "../components";
 import Link from "next/link";
 import { useGlobalContext } from "../context/globalContext";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
-import { formValidations } from "../customHooks/useformValidation";
+import { formValidations } from "../utils/useformValidation";
 import { useState } from "react";
 import { useUserAuthContext, CurrentUserProps } from "@/context/userAuthContext";
 import { db, } from "../firebase/firebaseConfig";
 import { addDoc, collection } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
-import { accessValidations } from "@/customHooks/useaccessValidation";
+import { accessValidations } from "@/utils/useaccessValidation";
 
 
 
