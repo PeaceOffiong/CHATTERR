@@ -12,6 +12,16 @@ import { useState } from "react";
 import { NavbarVisibilityProps } from "@/types/shared";
 import Link from 'next/link';
 import { privateRoutes } from "@/utils/constants";
+import { useRouter } from "next/router";
+
+
+const NavLinks = [
+  { name: "Feed", icon: <GiZBrick />, path: privateRoutes.TopNav.feed },
+  { name: "Bookmarks", icon: < PiBookmarksThin />, path: privateRoutes.TopNav.bookmark },
+  { name: "Team Blogs", icon: <GoPeople />, path: privateRoutes.TopNav.teamblogs },
+  { name: "Drafts", icon: <BsEnvelopeOpen />, path: privateRoutes.TopNav.draft },
+  { name: "Analytics", icon: <VscGraph />, path: privateRoutes.TopNav.analytics },
+]
 
 const Navsection: React.FC<NavbarVisibilityProps> = ({ showNavsection, setShowNavSection }) => {
   const [showItems, setShowItems] = useState<number>(4);
@@ -23,6 +33,8 @@ const Navsection: React.FC<NavbarVisibilityProps> = ({ showNavsection, setShowNa
       prevShowItems >= tags.length ? 4 : tags.length
     );
   };
+
+  const router = useRouter();
 
   const handleShowMoreLess = (): string => {
     if (showItems == 4) {
@@ -45,22 +57,15 @@ const Navsection: React.FC<NavbarVisibilityProps> = ({ showNavsection, setShowNa
         </h2>
         <div><h2 className="pb-4 pt-2 flex gap-2"><b
           className="font-semibold">Overview</b></h2>
-          <Link href={privateRoutes.feed}>
-            <LeftTabs icons={<GiZBrick />} name="Feed" />
-          </Link>
-          <Link href={privateRoutes.bookmark}>
-            <LeftTabs icons={<PiBookmarksThin />} name="Bookmarks" />
-          </Link>
-          <Link href={privateRoutes.teamblogs}>
-            <LeftTabs icons={<GoPeople />} name="Team Blogs" />
-          </Link>
-          <Link href={privateRoutes.draft}>
-            <LeftTabs icons={<BsEnvelopeOpen />} name="Drafts" />
-          </Link>
-          <Link href={privateRoutes.analytics}>
-            <LeftTabs icons={<VscGraph />} name="Analytics" />
-          </Link>
-          </div>
+          {NavLinks.map((each, index) => {
+            return <Link
+              href={each.path}
+              key={index}
+              className={`${router.pathname === each.path ? "!text-blue-500" : " "}`}>
+              <LeftTabs icons={each.icon} name={each.name} />
+            </Link>
+          })}
+        </div>
         <div>
           <h2 className="py-4 flex gap-2">
             <b>
@@ -81,8 +86,12 @@ const Navsection: React.FC<NavbarVisibilityProps> = ({ showNavsection, setShowNa
           <h2 className="py-4 flex gap-2">
             <b>Personal</b>
           </h2>
-          <LeftTabs icons={<BsPerson />} name="Account" />
-          <LeftTabs icons={<GoBell />} name="Notifications" />
+          <Link href={`/${dataState.currentUser.fullName}`} className="">
+            <LeftTabs icons={<BsPerson />} name="Account" />
+          </Link>
+          <Link href={privateRoutes.BottomNav.Notifications} className="">
+            <LeftTabs icons={<GoBell />} name="Notifications" />
+          </Link>
           <p className="text-red-500 p-4 text-sm cursor-pointer">Logout </p>
         </div>
       </div>

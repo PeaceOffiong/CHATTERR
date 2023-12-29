@@ -1,8 +1,25 @@
-import React from 'react'
+import React from 'react';
+import NavLayout from '@/componentsUserAcc/NavLayout';
+import { useUserAuthContext } from '@/context/userAuthContext';
 
 const index = () => {
+  const { touchEnd,
+    touchStart,
+    touchMove, showNavsection,
+    setShowNavsection } = useUserAuthContext();
   return (
-    <div>index</div>
+    <section
+      onTouchEnd={touchEnd}
+      onTouchStart={touchStart}
+      onTouchMove={touchMove}
+      className={`h-full flex section-container overflow-x-hidden`}>
+      <NavLayout>
+        <div className="w-screen sm:w-10/12 md:w-4/5 shrink-0 relative overflow-x-hidden h-auto">
+          <p>Drafts</p>
+        </div>
+      </NavLayout>
+    </section>
+
   )
 }
 

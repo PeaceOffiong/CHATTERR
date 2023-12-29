@@ -6,8 +6,8 @@ import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { formValidations } from "../utils/useformValidation";
 import { useState } from "react";
 import { useUserAuthContext, CurrentUserProps } from "@/context/userAuthContext";
-import { db, } from "../firebase/firebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { db, auth, createUserWithEmailAndPassword } from "../firebase/firebaseConfig";
+import { addDoc, collection, } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
 import { accessValidations } from "@/utils/useaccessValidation";
 
@@ -16,7 +16,7 @@ import { accessValidations } from "@/utils/useaccessValidation";
 const LoginSignup = () => {
   const { state, dispatch } = useGlobalContext();
   const { dataState, dispatchB } = useUserAuthContext();
-  const { usersData, currentUser } = dataState;
+  const { currentUser } = dataState;
   const [loginTab, setloginTab] = useState<boolean>(false);
   const [signUpTab, setSignUpTab] = useState<boolean>(true);
   const [showEmailConfirm, setShowEmailConfirm] = useState<boolean>(false);
@@ -39,7 +39,6 @@ const LoginSignup = () => {
     e.preventDefault();
     const isFormInValid = formValidations(
       dispatch,
-      usersData,
       email,
       password,
       confirmPassword,
@@ -69,15 +68,67 @@ const LoginSignup = () => {
     }
   };
 
-  const signUpWithEmail = (person: CurrentUserProps) => {
-    addDoc(usersCollectionRef, person)
-    sendVerificationCode(person.email);
-    localStorage.setItem("token", person.email)
-    dispatchB({
-      type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
-      payload: person
-    })
-  }
+
+  const signUpWithEmail = async (person: CurrentUserProps) => {
+    try {
+      // Create user in authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, person.email, person.password);
+      const user = userCredential.user;
+
+      const usersCollectionRef = collection(db, 'users');
+      await addDoc(usersCollectionRef, {
+        id: user.uid,
+        email,
+        firstName: person.firstName,
+        lastName: person.lastName,
+        password,
+        fullName: `${person.firstName} ${person.lastName}`,
+        interests: [],
+        Blogs: {},
+        followers: [],
+      });
+
+      sendVerificationCode(person.email);
+      localStorage.setItem("token", person.email)
+      dispatchB({
+        type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
+        payload: person
+      })
+
+      console.log('User registered successfully:', user);
+    } catch (error: any) {
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          dispatch({
+            type: REDUCER_ACTION_TYPE.UPDATE_ERROR_EMAIL,
+            payload: "Email already exists"
+          });
+          console.log(`Email address already in use.`);
+          break;
+        default:
+          console.log(error.message);
+          break;
+      }
+    }
+  };
+
+  // const signUpWithEmail = (person: CurrentUserProps) => {
+  //   // fire.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+  //   //   .then((u) => {
+  //   //   }).catch((error) => {
+  //   //     console.log(error);
+  //   //   });
+
+
+
+  //   addDoc(usersCollectionRef, person)
+  //   sendVerificationCode(person.email);
+  //   localStorage.setItem("token", person.email)
+  //   dispatchB({
+  //     type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
+  //     payload: person
+  //   })
+  // }
 
   const sendVerificationCode = (email: string) => {
     const verificationCode = generateVerificationCode();
@@ -111,8 +162,8 @@ const LoginSignup = () => {
       code += Arraycode[i];
     }
     if (code === generatedCode) {
-      if (currentUser.length > 0) {
-        router.push("/Home")
+      if (currentUser.email.trim() === "") {
+        router.push("/dashboard/Home")
         // router.push(`/${currentUser[0].firstName}${currentUser[0].lastName}`);
         console.log("Email verified")
       }
@@ -124,8 +175,8 @@ const LoginSignup = () => {
 
   const handleResendcode = () => {
     setResendCode(false)
-    if (currentUser.length > 0) {
-      sendVerificationCode(currentUser[0].email)
+    if (currentUser.email.trim() === "") {
+      sendVerificationCode(currentUser.email);
     }
   }
 
@@ -133,7 +184,7 @@ const LoginSignup = () => {
 
     e.preventDefault();
     try {
-      const grantAccess = await accessValidations(dispatch, dispatchB, loginEmail, loginPassword, usersData)
+      const grantAccess = await accessValidations(dispatch, dispatchB, loginEmail, loginPassword)
       console.log(grantAccess);
       if (grantAccess) {
         console.log(currentUser);

@@ -3,7 +3,7 @@ import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { getDocs, query, collection, where } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
-export const accessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<any>, loginEmail: string, loginPassword: string, usersData: any[]) => {
+export const accessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<any>, loginEmail: string, loginPassword: string) => {
     return new Promise((resolve) => {
         const usersCollectionRef = collection(db, "Users");
 
@@ -17,7 +17,7 @@ export const accessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<a
                 if (!querySnapshot.empty) {
                     querySnapshot.forEach((doc) => {
                         dispatchB({
-                            type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: [doc.id, doc.data()]
+                          type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER, payload: {id: doc.id, ...doc.data() }
                         })
                         dispatch({
                             type: REDUCER_ACTION_TYPE.UPDATE_ERROR_LOGIN_EMAIL,

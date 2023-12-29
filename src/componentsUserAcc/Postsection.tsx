@@ -85,17 +85,17 @@ const Postsection : React.FC = () => {
         console.log(dataArray);
 
         //For you Post  
-        const followerPosts = await dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom || currentUser[0].email === post.postFrom))
+        const followerPosts = await dataArray.filter((post) => currentUser.followers.some((follower) => follower.name === post.postFrom || currentUser.email === post.postFrom))
         setForYouPost([...followerPosts]);
 
         //Featured
         const featuredPosts = dataArray.filter((each) => {
-          return each.comments.some((comment) => comment.name === currentUser[0].email);
+          return each.comments.some((comment) => comment.name === currentUser.email);
         })
         setFeaturedPost(featuredPosts);
 
         //Recent
-        const recentPosts = dataArray.filter((post) => currentUser[0].followers.some((follower) => follower.name === post.postFrom || currentUser[0].email === post.postFrom))
+        const recentPosts = dataArray.filter((post) => currentUser.followers.some((follower) => follower.name === post.postFrom || currentUser.email === post.postFrom))
         setRecentPost(recentPosts)
 
 

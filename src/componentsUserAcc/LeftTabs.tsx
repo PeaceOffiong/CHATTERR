@@ -15,4 +15,4 @@ const LeftTabs: React.FC<Props> = ({ icons, name }) => {
     )
 }
 
-export default LeftTabs
+export default LeftTabs;

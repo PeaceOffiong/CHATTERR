@@ -1,12 +1,17 @@
 
 
 export const privateRoutes = {
-  feed: "/dashboard/Home",
-  analytics: "/dashboard/analytics",
-  bookmark: "/dashboard/bookmark",
-  draft: "/dashboard/draft",
-  teamblogs: "/dashboard/teamBlogs"
-}
+  TopNav: {
+    feed: "/dashboard/Home",
+    analytics: "/dashboard/analytics",
+    bookmark: "/dashboard/bookmark",
+    draft: "/dashboard/drafts",
+    teamblogs: "/dashboard/teamBlogs",
+  },
+  BottomNav: {
+    Notifications: "/dashboard/notifications"
+  }
+};
 
 
 export const publicRoutes = {

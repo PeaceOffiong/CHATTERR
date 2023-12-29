@@ -39,15 +39,23 @@ type UserAuthContextValue = {
 
 
 export type DataStateType = {
-  usersData: any[];
-  currentUser: CurrentUserProps[];
+  // usersData: any[];
+  currentUser: CurrentUserProps;
   tags: any[];
   loading: boolean;
 }
 
 export const DataState: DataStateType = {
-  usersData: [],
-  currentUser: [],
+  currentUser: {
+    email: "", password:
+      "", firstName: "",
+    lastName: "",
+    fullName: "",
+    interests: [],
+    Blogs: {},
+    followers: [],
+    id: ""
+  },
   tags: [],
   loading: true
 }
@@ -56,11 +64,11 @@ const UserAuthContext = createContext<UserAuthContextValue>({
   dataState: DataState,
   dispatchB: () => { },
   handleGoogleSignUp: async () => { },
-  touchStart: (e) => {},
-  touchEnd: (e) => {},
-  touchMove: (e) => { },
+  touchStart: () => { },
+  touchEnd: () => { },
+  touchMove: () => { },
   showNavsection: true,
-  setShowNavsection: () => {},
+  setShowNavsection: () => { },
 });
 
 
@@ -96,8 +104,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     getTabs();
   }, [])
 
-  console.log(dataState.usersData);
-
   const splitFullName = (fullName: string): { firstName: string, lastName: string } => {
     const [firstName, lastName] = fullName.split(' ');
     return { firstName, lastName };
@@ -127,7 +133,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
             type: REDUCER_ACTION_TYPE.UPDATE_CURRENT_USER,
             payload: userDetails
           })
-          router.push(`/Home`);
+          router.push(`/dashboard/Home`);
         }
       })
       .catch((error) => {
