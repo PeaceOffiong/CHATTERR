@@ -12,10 +12,10 @@ export default function IndexPage() {
     if (storedUser) {
       setIsUserLoggedIn(true);
     }
-  })
+  }, [])
  
   const routeToHome = () => {
-    route.push('/Dashboard')
+    route.push('/dashboard/Home')
   }
   return isUserLoggedIn ? routeToHome()  : <LandingPage />
 }

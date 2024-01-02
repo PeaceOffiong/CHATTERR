@@ -2,7 +2,7 @@ import React from 'react';
 import NavLayout from '@/componentsUserAcc/NavLayout';
 import { useUserAuthContext } from '@/context/userAuthContext';
 
-const index = () => {
+const index : React.FC = () => {
   const { touchEnd,
     touchStart,
     touchMove, showNavsection,

@@ -39,7 +39,6 @@ const LoginSignup = () => {
     e.preventDefault();
     const isFormInValid = formValidations(
       dispatch,
-      email,
       password,
       confirmPassword,
     );
@@ -75,7 +74,7 @@ const LoginSignup = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, person.email, person.password);
       const user = userCredential.user;
 
-      const usersCollectionRef = collection(db, 'users');
+      const usersCollectionRef = collection(db, 'Users');
       await addDoc(usersCollectionRef, {
         id: user.uid,
         email,

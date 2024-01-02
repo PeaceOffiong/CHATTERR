@@ -80,16 +80,6 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
   const TabsCollectionRef = collection(db, "Tag")
 
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const data = await getDocs(usersCollectionRef)
-        const dataArray = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        dispatchB({ type: REDUCER_ACTION_TYPE.UPDATE_USERS, payload: dataArray })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getUsers();
     const getTabs = async () => {
       try {
         const data = await getDocs(TabsCollectionRef)

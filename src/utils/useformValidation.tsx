@@ -3,7 +3,6 @@ import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 
 export const formValidations = (
   dispatch: Dispatch<any>,
-  email?: string,
   password?: string,
   confirmPassword?: string,
 ): boolean => {
