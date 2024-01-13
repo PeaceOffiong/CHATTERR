@@ -126,7 +126,7 @@ const Postsection : React.FC = () => {
           <b>FEED</b>
         </h2>
         <p className="text-sm text-grey-300">
-          Explore different content you'd love
+          Explore different content you&apos;d love
         </p>
       </div>
       <div className="flex h-10 bg-blue-600 items-center justify-center gap-1 text-white p-2 rounded-md">

@@ -92,7 +92,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
     }
 
     getTabs();
-  }, [])
+  }, [TabsCollectionRef])
 
   const splitFullName = (fullName: string): { firstName: string, lastName: string } => {
     const [firstName, lastName] = fullName.split(' ');

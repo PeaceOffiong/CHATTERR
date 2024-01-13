@@ -40,7 +40,7 @@ const Home = () => {
       fetchUser(token)
       console.log(currentUser);
     }
-  }, [])
+  }, [currentUser, dispatchB])
 
   return (
     <>
