@@ -6,6 +6,7 @@ import { db } from '@/firebase/firebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { REDUCER_ACTION_TYPE } from '@/reducers/actions';
 import NavLayout from '@/componentsUserAcc/NavLayout';
+import { DocumentKey } from '@/utils/constants';
 
 const Home = () => {
   const { dataState, dispatchB, touchEnd,
@@ -18,7 +19,7 @@ const Home = () => {
     const token = localStorage.getItem("token");
     const fetchUser = async (token: string) => {
       try {
-        const q = query(collection(db, 'Users'), where('email', '==', token));
+        const q = query(collection(db, DocumentKey), where('email', '==', token));
         const querySnapshot = await getDocs(q);
 
         if (!querySnapshot.empty) {

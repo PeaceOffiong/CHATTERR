@@ -27,37 +27,3 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export { auth, provider, db, signInWithPopup, signInWithRedirect, createUserWithEmailAndPassword };
-
-
-  
-
-// fire.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-//   .then((userCredential) => {
-//     // User has been successfully created, and userCredential contains information about the newly created user
-//     const user = userCredential.user;
-
-//     // Add additional data to the user in your database
-//     addDoc(usersCollectionRef, {
-//       email,
-//       firstName,
-//       lastName,
-//       fullName: `${firstName} ${lastName}`,
-//       interests: [],
-//       Blogs: {},
-//       followers: [],
-//       // ... other properties you want to add
-//     });
-
-//     // You can also update the user profile with additional information
-//     return user.updateProfile({
-//       displayName: `${firstName} ${lastName}`,
-//       // ... other properties you want to update in the user profile
-//     });
-//   })
-//   .then(() => {
-//     // Verification code can be sent here if needed
-//     sendVerificationCode(this.state.email);
-//   })
-//   .catch((error) => {
-//     console.log(error);
-//   });

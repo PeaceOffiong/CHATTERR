@@ -1,4 +1,4 @@
-
+export const DocumentKey = 'Users'
 
 export const privateRoutes = {
   TopNav: {

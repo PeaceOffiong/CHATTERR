@@ -10,6 +10,7 @@ import { db, auth, createUserWithEmailAndPassword } from "../firebase/firebaseCo
 import { addDoc, collection, } from "firebase/firestore";
 import { NextRouter, useRouter } from "next/router";
 import { accessValidations } from "@/utils/useaccessValidation";
+import { DocumentKey } from "@/utils/constants";
 
 
 
@@ -33,7 +34,7 @@ const LoginSignup = () => {
   } = state;
   const [generatedCode, setGeneratedCode] = useState<string>("");
   const router: NextRouter = useRouter();
-  const usersCollectionRef = collection(db, "Users")
+  const usersCollectionRef = collection(db, DocumentKey)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
@@ -74,7 +75,7 @@ const LoginSignup = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, person.email, person.password);
       const user = userCredential.user;
 
-      const usersCollectionRef = collection(db, 'Users');
+      const usersCollectionRef = collection(db, DocumentKey);
       await addDoc(usersCollectionRef, {
         id: user.uid,
         email,

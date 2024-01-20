@@ -9,6 +9,7 @@ import { dataReducer } from "@/reducers/dataReducer";
 import { addDoc, collection, getDocs } from "firebase/firestore";
 import { REDUCER_ACTION_TYPE } from "@/reducers/actions";
 import { NextRouter, useRouter } from "next/router";
+import { DocumentKey } from "@/utils/constants";
 
 type UserAuthProviderProps = {
   children: ReactNode;
@@ -76,7 +77,7 @@ const UserAuthProvider = ({ children }: UserAuthProviderProps) => {
   const router: NextRouter = useRouter();
   const [dataState, dispatchB] = useReducer(dataReducer, DataState);
 
-  const usersCollectionRef = collection(db, "Users");
+  const usersCollectionRef = collection(db, DocumentKey);
   const TabsCollectionRef = collection(db, "Tag")
 
   useEffect(() => {

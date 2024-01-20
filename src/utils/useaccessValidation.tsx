@@ -2,10 +2,11 @@ import { Dispatch } from "react";
 import { REDUCER_ACTION_TYPE } from "../reducers/actions";
 import { getDocs, query, collection, where } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
+import { DocumentKey } from "./constants";
 
 export const accessValidations = (dispatch: Dispatch<any>, dispatchB: Dispatch<any>, loginEmail: string, loginPassword: string) => {
     return new Promise((resolve) => {
-        const usersCollectionRef = collection(db, "Users");
+        const usersCollectionRef = collection(db, DocumentKey);
 
         const queryRef = query(usersCollectionRef,
             where("email", "==", loginEmail),
